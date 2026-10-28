@@ -14,15 +14,16 @@ export const ScrollTreeSpine: React.FC = () => {
     const handleScroll = () => {
       if (!spineRef.current) return;
       const rect = spineRef.current.getBoundingClientRect();
-      const totalDist = rect.height - window.innerHeight;
-      if (totalDist <= 0) return;
-      // Exact progress measurement within Sections 2-5
-      target = Math.min(Math.max(-rect.top / totalDist, 0), 1);
+      if (rect.height <= 0) return;
+
+      // Focal plane tracking: place packet right at the user's viewport focal line (45% from top of screen)
+      const focalPx = -rect.top + window.innerHeight * 0.45;
+      target = Math.min(Math.max(focalPx / rect.height, 0), 1);
 
       const now = Date.now();
       const dt = Math.max(now - lastTimeRef.current, 1);
       const dy = Math.abs(window.scrollY - lastScrollRef.current);
-      setPacketVelocity(Math.min(dy / dt, 2.5));
+      setPacketVelocity(Math.min(dy / dt, 3.0));
       lastScrollRef.current = window.scrollY;
       lastTimeRef.current = now;
     };
@@ -30,9 +31,10 @@ export const ScrollTreeSpine: React.FC = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
+    // Responsive physics loop with zero lag (lerp factor 0.18 for smooth & responsive tracking)
     let current = 0;
     const updatePhysics = () => {
-      current += (target - current) * 0.075;
+      current += (target - current) * 0.18;
       setSmoothProgress(current);
       animId = requestAnimationFrame(updatePhysics);
     };
@@ -47,18 +49,18 @@ export const ScrollTreeSpine: React.FC = () => {
   const p = smoothProgress; // 0.0 to 1.0 across Sections 2-5
 
   // Total vertical viewBox: 2800 units
-  const packetY = p * 2650 + 20;
+  const packetY = p * 2760 + 20;
 
-  // Fork 1 (Engine Section): Y = 80 to 650 (p = 0.05 to 0.28)
-  const isFork1 = p >= 0.05 && p <= 0.28;
-  const fork1T = isFork1 ? (p - 0.05) / (0.28 - 0.05) : 0;
+  // Fork 1 (Engine Section): Y = 100 to 650 (p = 0.04 to 0.25)
+  const isFork1 = p >= 0.04 && p <= 0.25;
+  const fork1T = isFork1 ? (p - 0.04) / (0.25 - 0.04) : 0;
   const fork1Sine = Math.sin(fork1T * Math.PI);
   const f1LeftX = 600 - fork1Sine * 300;
   const f1RightX = 600 + fork1Sine * 300;
 
-  // Fork 2 (Templates 4-Way Fan-out): Y = 1200 to 2150 (p = 0.48 to 0.82)
-  const isFork2 = p >= 0.48 && p <= 0.82;
-  const fork2T = isFork2 ? (p - 0.48) / (0.82 - 0.48) : 0;
+  // Fork 2 (Templates 4-Way Fan-out): Y = 1200 to 2150 (p = 0.42 to 0.78)
+  const isFork2 = p >= 0.42 && p <= 0.78;
+  const fork2T = isFork2 ? (p - 0.42) / (0.78 - 0.42) : 0;
   const fork2Sine = Math.sin(fork2T * Math.PI);
   const b1X = 600 - fork2Sine * 420; // 600 -> 180 -> 600 (DevOps Orange)
   const b2X = 600 - fork2Sine * 180; // 600 -> 420 -> 600 (AI Cyan)
@@ -95,56 +97,56 @@ export const ScrollTreeSpine: React.FC = () => {
 
           <radialGradient id="packetGlow">
             <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
-            <stop offset="35%" stopColor="#FFB703" stopOpacity="0.9" />
-            <stop offset="70%" stopColor="#FF9900" stopOpacity="0.4" />
+            <stop offset="30%" stopColor="#FFB703" stopOpacity="0.95" />
+            <stop offset="65%" stopColor="#FF5500" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#FF5500" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* --- INITIAL INLET INTO SECTION 2 (Y: 0 -> 80) --- */}
+        {/* --- INITIAL INLET INTO SECTION 2 (Y: 0 -> 100) --- */}
         <path
-          d="M 600 0 L 600 80"
+          d="M 600 0 L 600 100"
           stroke="#00E5FF"
           strokeWidth="3.5"
           filter="url(#laserBlur)"
-          opacity="0.8"
+          opacity="0.85"
         />
 
-        {/* --- FORK 1: V8 ENGINE SPLIT (Y: 80 -> 650) --- */}
+        {/* --- FORK 1: V8 ENGINE SPLIT (Y: 100 -> 650) --- */}
         {/* Left Branch (Kahn Topological Sorter - Cyan) */}
         <path
-          d="M 600 80 C 600 180, 300 220, 300 365 C 300 510, 580 550, 600 650"
+          d="M 600 100 C 600 200, 300 240, 300 375 C 300 510, 580 550, 600 650"
           stroke="#00E5FF"
-          strokeWidth="2.5"
+          strokeWidth="3"
           strokeDasharray="8 5"
           filter="url(#laserBlur)"
-          opacity={isFork1 ? "0.9" : "0.4"}
+          opacity={isFork1 ? "0.95" : "0.45"}
         />
         {/* Right Branch (V8 Isolated Sandbox - Emerald) */}
         <path
-          d="M 600 80 C 600 180, 900 220, 900 365 C 900 510, 620 550, 600 650"
+          d="M 600 100 C 600 200, 900 240, 900 375 C 900 510, 620 550, 600 650"
           stroke="#00FF88"
-          strokeWidth="2.5"
+          strokeWidth="3"
           strokeDasharray="8 5"
           filter="url(#laserBlur)"
-          opacity={isFork1 ? "0.9" : "0.4"}
+          opacity={isFork1 ? "0.95" : "0.45"}
         />
 
-        {/* Junction Diode 1 (Split Point at 80) */}
-        <circle cx="600" cy="80" r="8" fill="#070A0F" stroke="#00E5FF" strokeWidth="2.5" />
-        <circle cx="600" cy="80" r="3.5" fill="#00E5FF" />
+        {/* Junction Diode 1 (Split Point at 100) */}
+        <circle cx="600" cy="100" r="9" fill="#070A0F" stroke="#00E5FF" strokeWidth="2.5" />
+        <circle cx="600" cy="100" r="4" fill="#00E5FF" />
 
         {/* Junction Diode 1 (Merge Point at 650) */}
-        <circle cx="600" cy="650" r="8" fill="#070A0F" stroke="#00FF88" strokeWidth="2.5" />
-        <circle cx="600" cy="650" r="3.5" fill="#00FF88" />
+        <circle cx="600" cy="650" r="9" fill="#070A0F" stroke="#00FF88" strokeWidth="2.5" />
+        <circle cx="600" cy="650" r="4" fill="#00FF88" />
 
         {/* --- TRUNK 2: (Engine -> Telemetry Cockpit Y: 650 -> 1200) --- */}
         <path
           d="M 600 650 L 600 1200"
           stroke="#FF9900"
-          strokeWidth="3.5"
+          strokeWidth="4"
           filter="url(#laserBlur)"
-          opacity="0.8"
+          opacity="0.85"
         />
 
         {/* --- FORK 2: 4-WAY TEMPLATE FAN-OUT (Y: 1200 -> 2150) --- */}
@@ -154,7 +156,7 @@ export const ScrollTreeSpine: React.FC = () => {
           stroke="#FF5500"
           strokeWidth="2.5"
           filter="url(#laserBlur)"
-          opacity={isFork2 ? "0.9" : "0.35"}
+          opacity={isFork2 ? "0.95" : "0.4"}
         />
         {/* Branch 2: AI & LLM Systems (Radar Cyan #00E5FF) */}
         <path
@@ -162,7 +164,7 @@ export const ScrollTreeSpine: React.FC = () => {
           stroke="#00E5FF"
           strokeWidth="2.5"
           filter="url(#laserBlur)"
-          opacity={isFork2 ? "0.9" : "0.35"}
+          opacity={isFork2 ? "0.95" : "0.4"}
         />
         {/* Branch 3: High-Scale Data ETL (Acid Emerald #00FF88) */}
         <path
@@ -170,7 +172,7 @@ export const ScrollTreeSpine: React.FC = () => {
           stroke="#00FF88"
           strokeWidth="2.5"
           filter="url(#laserBlur)"
-          opacity={isFork2 ? "0.9" : "0.35"}
+          opacity={isFork2 ? "0.95" : "0.4"}
         />
         {/* Branch 4: Security & Webhooks (Cyber Gold #FF9900) */}
         <path
@@ -178,41 +180,41 @@ export const ScrollTreeSpine: React.FC = () => {
           stroke="#FF9900"
           strokeWidth="2.5"
           filter="url(#laserBlur)"
-          opacity={isFork2 ? "0.9" : "0.35"}
+          opacity={isFork2 ? "0.95" : "0.4"}
         />
 
         {/* Junction Diode 2 (4-way Split at 1200) */}
-        <circle cx="600" cy="1200" r="9" fill="#070A0F" stroke="#FF9900" strokeWidth="2.5" />
-        <circle cx="600" cy="1200" r="4" fill="#FFB703" />
+        <circle cx="600" cy="1200" r="10" fill="#070A0F" stroke="#FF9900" strokeWidth="2.5" />
+        <circle cx="600" cy="1200" r="4.5" fill="#FFB703" />
 
         {/* Junction Diode 2 (Re-Fusion at 2150) */}
-        <circle cx="600" cy="2150" r="9" fill="#070A0F" stroke="#00FF88" strokeWidth="2.5" />
-        <circle cx="600" cy="2150" r="4" fill="#00FF88" />
+        <circle cx="600" cy="2150" r="10" fill="#070A0F" stroke="#00FF88" strokeWidth="2.5" />
+        <circle cx="600" cy="2150" r="4.5" fill="#00FF88" />
 
-        {/* --- FINAL CONDUIT: (Templates -> Studio CTA Y: 2150 -> 2750) --- */}
+        {/* --- FINAL CONDUIT: (Templates -> Studio CTA Y: 2150 -> 2780) --- */}
         <path
-          d="M 600 2150 L 600 2750"
+          d="M 600 2150 L 600 2780"
           stroke="#00FF88"
           strokeWidth="4"
           filter="url(#laserBlur)"
-          opacity="0.85"
+          opacity="0.9"
         />
 
-        {/* --- DYNAMIC PHOTON PACKETS (SMOOTH SCROLL PHYSICS) --- */}
+        {/* --- DYNAMIC PHOTON PACKETS (REAL-TIME FOCAL TRACKING) --- */}
 
         {/* 1. Single Main Packet on Trunk (When not in any fork) */}
         {!isFork1 && !isFork2 && (
           <g transform={`translate(600, ${packetY})`}>
-            <circle cx="0" cy="0" r="30" fill="url(#packetGlow)" opacity="0.65" />
+            <circle cx="0" cy="0" r="34" fill="url(#packetGlow)" opacity="0.8" />
             <ellipse
               cx="0"
-              cy={-packetVelocity * 7}
-              rx="4.5"
-              ry={6 + packetVelocity * 10}
+              cy={-packetVelocity * 9}
+              rx="5"
+              ry={7 + packetVelocity * 12}
               fill="#FFFFFF"
               filter="url(#laserBlur)"
             />
-            <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
+            <circle cx="0" cy="0" r="6" fill="#FFFFFF" />
           </g>
         )}
 
@@ -220,26 +222,26 @@ export const ScrollTreeSpine: React.FC = () => {
         {isFork1 && (
           <>
             <g transform={`translate(${f1LeftX}, ${packetY})`}>
-              <circle cx="0" cy="0" r="22" fill="#00E5FF" opacity="0.4" filter="url(#laserBlur)" />
+              <circle cx="0" cy="0" r="26" fill="#00E5FF" opacity="0.5" filter="url(#laserBlur)" />
               <ellipse
                 cx="0"
-                cy={-packetVelocity * 6}
-                rx="4"
-                ry={5 + packetVelocity * 8}
+                cy={-packetVelocity * 8}
+                rx="4.5"
+                ry={6 + packetVelocity * 10}
                 fill="#FFFFFF"
               />
-              <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+              <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
             </g>
             <g transform={`translate(${f1RightX}, ${packetY})`}>
-              <circle cx="0" cy="0" r="22" fill="#00FF88" opacity="0.4" filter="url(#laserBlur)" />
+              <circle cx="0" cy="0" r="26" fill="#00FF88" opacity="0.5" filter="url(#laserBlur)" />
               <ellipse
                 cx="0"
-                cy={-packetVelocity * 6}
-                rx="4"
-                ry={5 + packetVelocity * 8}
+                cy={-packetVelocity * 8}
+                rx="4.5"
+                ry={6 + packetVelocity * 10}
                 fill="#FFFFFF"
               />
-              <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+              <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
             </g>
           </>
         )}
@@ -249,23 +251,23 @@ export const ScrollTreeSpine: React.FC = () => {
           <>
             {/* Child 1: Safety Orange (DevOps) */}
             <g transform={`translate(${b1X}, ${packetY})`}>
-              <circle cx="0" cy="0" r="20" fill="#FF5500" opacity="0.45" filter="url(#laserBlur)" />
-              <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+              <circle cx="0" cy="0" r="24" fill="#FF5500" opacity="0.55" filter="url(#laserBlur)" />
+              <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
             </g>
             {/* Child 2: Radar Cyan (AI) */}
             <g transform={`translate(${b2X}, ${packetY})`}>
-              <circle cx="0" cy="0" r="20" fill="#00E5FF" opacity="0.45" filter="url(#laserBlur)" />
-              <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+              <circle cx="0" cy="0" r="24" fill="#00E5FF" opacity="0.55" filter="url(#laserBlur)" />
+              <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
             </g>
             {/* Child 3: Acid Emerald (Data ETL) */}
             <g transform={`translate(${b3X}, ${packetY})`}>
-              <circle cx="0" cy="0" r="20" fill="#00FF88" opacity="0.45" filter="url(#laserBlur)" />
-              <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+              <circle cx="0" cy="0" r="24" fill="#00FF88" opacity="0.55" filter="url(#laserBlur)" />
+              <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
             </g>
             {/* Child 4: Cyber Gold (Security) */}
             <g transform={`translate(${b4X}, ${packetY})`}>
-              <circle cx="0" cy="0" r="20" fill="#FF9900" opacity="0.45" filter="url(#laserBlur)" />
-              <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+              <circle cx="0" cy="0" r="24" fill="#FF9900" opacity="0.55" filter="url(#laserBlur)" />
+              <circle cx="0" cy="0" r="5.5" fill="#FFFFFF" />
             </g>
           </>
         )}

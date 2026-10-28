@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Cpu } from "lucide-react";
+import { ArrowRight, Terminal } from "lucide-react";
 import { GithubIcon } from "./GithubIcon";
 
 interface NavbarProps {
@@ -12,51 +12,56 @@ export const Navbar: React.FC<NavbarProps> = ({
   githubUrl = "https://github.com/jatin50/n8n_workflow",
 }) => {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-      <nav className="pointer-events-auto flex items-center justify-between gap-6 px-6 py-3 w-full max-w-5xl rounded-full bg-[#090D16]/90 backdrop-blur-2xl border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.6)] transition-all">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 p-[1px] flex items-center justify-center shadow-[0_0_15px_rgba(255,153,0,0.4)]">
-            <div className="w-full h-full bg-[#070A0F] rounded-[7px] flex items-center justify-center">
-              <Cpu className="w-4 h-4 text-amber-400" />
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-sm tracking-tight text-white flex items-center gap-2 font-['Space_Grotesk']">
-              AethelFlow <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">v2.0</span>
-            </span>
-          </div>
-        </div>
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 sm:px-14 py-5 bg-[#070A0F]/50 backdrop-blur-md border-b border-white/5">
+      {/* Brand & Left Navigation Links */}
+      <div className="flex items-center gap-10">
+        <a href="#pipeline-3d" className="flex items-center gap-2.5 group">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B20] group-hover:scale-125 transition-transform shadow-[0_0_10px_#ff3b20]" />
+          <span className="font-extrabold text-sm tracking-wider text-white uppercase font-['Space_Grotesk']">
+            AethelFlow
+          </span>
+          <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
+            // v2.0
+          </span>
+        </a>
 
-        {/* Links */}
-        <div className="hidden md:flex items-center gap-6 text-xs font-mono font-medium text-slate-300">
-          <a href="#pipeline-3d" className="hover:text-amber-400 transition-colors">3D PIPELINE</a>
-          <a href="#engine-chip" className="hover:text-cyan-400 transition-colors">V8 ENGINE</a>
-          <a href="#telemetry-hud" className="hover:text-amber-400 transition-colors">TELEMETRY</a>
-          <a href="#templates" className="hover:text-emerald-400 transition-colors">TEMPLATES</a>
-        </div>
-
-        {/* Action CTAs */}
-        <div className="flex items-center gap-3">
-          <a
-            href={githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs font-mono text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full transition-all"
-          >
-            <GithubIcon className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">GitHub</span>
+        <nav className="hidden lg:flex items-center gap-8 text-[11px] font-mono tracking-widest text-slate-400 uppercase">
+          <a href="#pipeline-3d" className="hover:text-white transition-colors">
+            HOME
           </a>
-
-          <a
-            href={appUrl}
-            className="flex items-center gap-1.5 text-xs font-mono font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(255,153,0,0.4)] hover:shadow-[0_0_25px_rgba(255,153,0,0.6)] transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <span>Launch Studio</span>
-            <ArrowRight className="w-3.5 h-3.5 text-black" />
+          <a href="#engine-chip" className="hover:text-white transition-colors">
+            V8 ENGINE
           </a>
-        </div>
-      </nav>
+          <a href="#telemetry-hud" className="hover:text-white transition-colors">
+            TELEMETRY
+          </a>
+          <a href="#templates" className="hover:text-white transition-colors">
+            BLUEPRINTS
+          </a>
+        </nav>
+      </div>
+
+      {/* Right Actions */}
+      <div className="flex items-center gap-5">
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-[11px] font-mono text-slate-400 hover:text-white transition-colors"
+        >
+          <GithubIcon className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">GITHUB</span>
+        </a>
+
+        <a
+          href={appUrl}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 hover:border-[#FF3B20] bg-white/5 hover:bg-[#FF3B20]/10 text-xs font-mono font-semibold text-white tracking-wider uppercase transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <Terminal className="w-3.5 h-3.5 text-[#FF3B20]" />
+          <span>LAUNCH STUDIO</span>
+          <ArrowRight className="w-3 h-3 text-[#FF3B20]" />
+        </a>
+      </div>
     </header>
   );
 };
