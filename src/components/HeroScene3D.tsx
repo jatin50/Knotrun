@@ -109,7 +109,6 @@ export const HeroScene3D: React.FC = () => {
     scene.add(packetGlowLight);
 
     // --- INDUSTRIAL ACCELERATOR ENVIRONMENT ---
-    // Floor Grid with Cyber Gold Major Lines & Dark Slate Subdivisions
     const gridHelper = new THREE.GridHelper(180, 90, 0xff9900, 0x1a2638);
     gridHelper.position.y = -6.5;
     scene.add(gridHelper);
@@ -136,7 +135,7 @@ export const HeroScene3D: React.FC = () => {
     }
 
     // --- 1. HEAVY SPACE RAILGUN / ENERGY CANNON (STATION 0) ---
-    // Positioned at X: -22. Fully movable barrel that aims via mouse!
+    // Positioned at X: -22. Fully movable barrel assembly that aims via mouse!
     const cannonMountGroup = new THREE.Group();
     cannonMountGroup.position.set(-22, 0, 0);
 
@@ -277,7 +276,7 @@ export const HeroScene3D: React.FC = () => {
       color: 0x1d2c3f,
       metalness: 0.15,
       roughness: 0.06,
-      transmission: 0.90, // Heavy glass refraction
+      transmission: 0.90,
       thickness: 2.2,
       ior: 1.54,
       reflectivity: 0.98,
@@ -287,7 +286,7 @@ export const HeroScene3D: React.FC = () => {
     const glassTubeMesh = new THREE.Mesh(glassTubeGeo, thickGlassMat);
     scene.add(glassTubeMesh);
 
-    // Inner Glowing Conduit Filament (Thin high-voltage core wire running through center)
+    // Inner Glowing Conduit Filament (Thin core wire running through center)
     const innerCoreGeo = new THREE.TubeGeometry(conduitSpline, 180, 0.08, 8, false);
     const innerCoreMat = new THREE.MeshBasicMaterial({
       color: 0xffaa00,
@@ -322,7 +321,6 @@ export const HeroScene3D: React.FC = () => {
       collar.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), tangent);
       scene.add(collar);
 
-      // Support pylon descending to floor grid every 2 collars
       if (Math.round(t * 100) % 2 === 0) {
         const pylon = new THREE.Mesh(pylonGeo, pylonMat);
         pylon.position.set(pt.x, (pt.y - 6.5) / 2, pt.z);
@@ -338,7 +336,6 @@ export const HeroScene3D: React.FC = () => {
     const st1 = new THREE.Group();
     st1.position.set(-6.0, 0, 0);
 
-    // Dual Interlocking Hexagonal Airlock Bulkhead
     const st1RingMat = new THREE.MeshStandardMaterial({
       color: 0xff9900,
       emissive: 0xff6600,
@@ -362,7 +359,6 @@ export const HeroScene3D: React.FC = () => {
     const st2 = new THREE.Group();
     st2.position.set(6.0, 0.5, 0);
 
-    // Magnetic Tokamak Cylinder with Cyan Plasma Rings
     const st2Core = new THREE.Mesh(
       new THREE.CylinderGeometry(2.4, 2.4, 3.8, 16),
       new THREE.MeshStandardMaterial({
@@ -398,7 +394,6 @@ export const HeroScene3D: React.FC = () => {
     const st3 = new THREE.Group();
     st3.position.set(18.0, 0, 0);
 
-    // Industrial Cryogenic Pressure Buffer Silos
     const st3SiloMat = new THREE.MeshStandardMaterial({
       color: 0x1b2434,
       metalness: 0.88,
@@ -426,7 +421,6 @@ export const HeroScene3D: React.FC = () => {
     const st4 = new THREE.Group();
     st4.position.set(30.0, 0.5, 0);
 
-    // Hyper-Speed Multi-Channel Emitter with Emerald Plasma Field
     const st4Hub = new THREE.Mesh(
       new THREE.OctahedronGeometry(2.4, 1),
       new THREE.MeshStandardMaterial({
@@ -453,7 +447,6 @@ export const HeroScene3D: React.FC = () => {
     // --- 4. GLOWING HIGH-ENERGY DATA PACKET ---
     const packetGroup = new THREE.Group();
 
-    // High-Intensity Pure White Core
     const packetCore = new THREE.Mesh(
       new THREE.SphereGeometry(0.42, 24, 24),
       new THREE.MeshStandardMaterial({
@@ -464,7 +457,6 @@ export const HeroScene3D: React.FC = () => {
     );
     packetGroup.add(packetCore);
 
-    // Outer Animated Plasma Corona
     const coronaMat = new THREE.MeshBasicMaterial({
       color: 0xff7700,
       transparent: true,
@@ -493,9 +485,11 @@ export const HeroScene3D: React.FC = () => {
     let animId: number;
 
     const handleScroll = () => {
+      const containerRect = scrollContainer.getBoundingClientRect();
       const totalScroll = scrollContainer.scrollHeight - window.innerHeight;
       if (totalScroll <= 0) return;
-      const progress = Math.min(Math.max(window.scrollY / totalScroll, 0), 1);
+      // Exact progress measurement immune to layout shifts
+      const progress = Math.min(Math.max(-containerRect.top / totalScroll, 0), 1);
       targetT = progress;
       setScrollProgress(progress);
 
@@ -552,13 +546,11 @@ export const HeroScene3D: React.FC = () => {
       packetCorona.scale.setScalar(1 + Math.sin(time * 9) * 0.16);
 
       // 5. CINEMATIC SLOW-MOTION CAMERA TRACKING
-      // If user is at scroll 0%: Camera focuses on the Railgun cannon
-      // As scroll proceeds: Camera tracks right beside the packet in cinematic 3rd-person follow cam
       if (clampedT < 0.05) {
-        // Cannon View
-        const introCamPos = new THREE.Vector3(-19.5, 3.5, 9.5);
+        // Railgun cannon presentation view
+        const introCamPos = new THREE.Vector3(-19.5, 3.2, 10.0);
         camera.position.lerp(introCamPos, 0.08);
-        camera.lookAt(new THREE.Vector3(-17.0, 1.2, 0));
+        camera.lookAt(new THREE.Vector3(-16.0, 1.0, 0));
       } else if (clampedT > 0.88) {
         // Transition down into section 2
         const exitCamPos = new THREE.Vector3(30.0, 4.0, 10.0);
@@ -600,27 +592,27 @@ export const HeroScene3D: React.FC = () => {
 
   return (
     <div ref={scrollContainerRef} className="relative w-full h-[450vh] bg-[#070A0F]">
-      {/* PINNED FULLSCREEN 3D VIEWPORT */}
-      <div className="sticky top-0 w-screen h-screen overflow-hidden">
+      {/* PINNED FULLSCREEN 3D VIEWPORT (STAYS PINNED AS USER SCROLLS) */}
+      <div className="sticky top-0 w-full h-screen overflow-hidden">
         {/* Three.js Canvas Container */}
         <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-crosshair" />
 
         {/* TOP COCKPIT TELEMETRY BAR */}
         <div className="absolute top-20 left-0 right-0 z-20 flex items-center justify-between px-6 sm:px-12 pointer-events-none">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
             <div className="flex flex-col">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
                 <Activity className="w-3.5 h-3.5" />
-                <span>PARTICLE CONDUIT // ACTIVE</span>
+                <span>PARTICLE ACCELERATOR // ONLINE</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-500">
-                PBR REFRACTIVE CONDUIT • THICKNESS 2.2MM
+              <span className="text-[10px] font-mono text-slate-400">
+                THICK PBR GLASS CONDUIT • R=0.72 • TRANSMISSION 90%
               </span>
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-4 text-xs font-mono text-slate-400">
+          <div className="hidden sm:flex items-center gap-4 px-4 py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md text-xs font-mono text-slate-300">
             <span>PIPELINE PROGRESS: {Math.round(scrollProgress * 100)}%</span>
             <div className="w-36 h-2 rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
               <div
@@ -631,37 +623,40 @@ export const HeroScene3D: React.FC = () => {
           </div>
         </div>
 
-        {/* HERO TITLE (Visible at scroll 0 - 15%) */}
+        {/* HERO TITLE (High-contrast command plaque; fades cleanly as vertical scroll begins) */}
         <div
           style={{
-            opacity: Math.max(0, 1 - scrollProgress * 6.5),
-            transform: `translateY(${-scrollProgress * 140}px)`,
+            opacity: Math.max(0, 1 - scrollProgress * 14),
+            transform: `translateY(${-scrollProgress * 220}px)`,
+            pointerEvents: scrollProgress > 0.05 ? "none" : "auto",
           }}
-          className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6 pointer-events-none space-y-5"
+          className="absolute inset-x-0 top-36 z-20 flex flex-col items-center justify-center text-center px-6 transition-all duration-75"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400 shadow-[0_0_25px_rgba(255,153,0,0.25)]">
-            <Radio className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span>AIM CANNON WITH MOUSE • VERTICAL SCROLL TO LAUNCH</span>
-          </div>
+          <div className="p-7 sm:p-9 rounded-3xl bg-[#070A0F]/85 border-2 border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(255,153,0,0.15)] backdrop-blur-xl max-w-2xl w-full space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
+              <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+              <span>MOVE MOUSE TO AIM • SCROLL DOWN TO FIRE</span>
+            </div>
 
-          <h1 className="text-4xl sm:text-7xl font-extrabold text-white tracking-tight font-['Space_Grotesk'] leading-[1.08] max-w-4xl">
-            INDUSTRIAL-GRADE <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">
-              WORKFLOW ORCHESTRATION
-            </span>
-          </h1>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-['Space_Grotesk'] leading-[1.1]">
+              INDUSTRIAL-GRADE <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">
+                WORKFLOW ORCHESTRATION
+              </span>
+            </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl font-normal leading-relaxed">
-            Move your cursor to aim the magnetic accelerator cannon. Scroll down to fire the glowing plasma payload into the thick glass conduit and escort it across each pipeline station.
-          </p>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto font-normal leading-relaxed">
+              Aim the particle accelerator cannon with your mouse. Scroll down to fire the glowing plasma payload into the thick glass conduit and escort it across each pipeline station.
+            </p>
 
-          <div className="pt-4 flex items-center gap-2 text-xs font-mono text-amber-400 animate-bounce">
-            <ChevronDown className="w-4 h-4" />
-            <span>SCROLL DOWN TO FIRE PAYLOAD</span>
+            <div className="pt-2 flex items-center justify-center gap-2 text-xs font-mono font-bold text-amber-400 animate-bounce">
+              <ChevronDown className="w-4 h-4" />
+              <span>SCROLL DOWN TO LAUNCH PAYLOAD</span>
+            </div>
           </div>
         </div>
 
-        {/* DYNAMIC STATION ARCHITECTURE HUD CARD */}
+        {/* DYNAMIC STATION ARCHITECTURE HUD CARD (Slides in when reaching Station 1, 2, 3, or 4) */}
         {station && (
           <div className="absolute bottom-10 left-6 sm:left-12 z-30 max-w-md w-full p-6 rounded-2xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(255,153,0,0.2)] backdrop-blur-2xl animate-in slide-in-from-bottom-6 duration-200 space-y-3 pointer-events-auto">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">

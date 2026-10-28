@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
+  html, body {
     background-color: #070A0F;
     color: #F5F7FA;
     font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   code, pre, .font-mono {
