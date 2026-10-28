@@ -64,7 +64,7 @@ export const HeroScene3D: React.FC = () => {
 
     // --- THREE.JS SCENE INITIALIZATION ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070a0f, 0.018);
+    scene.fog = new THREE.FogExp2(0x070a0f, 0.016);
 
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -92,31 +92,29 @@ export const HeroScene3D: React.FC = () => {
     keySun.position.set(15, 30, 20);
     scene.add(keySun);
 
-    // Crimson studio rim light on the launcher deck
+    // Studio rim light for launcher deck
     const crimsonRimLight = new THREE.PointLight(0xff3311, 6.0, 35);
     crimsonRimLight.position.set(-28, 4, 8);
     scene.add(crimsonRimLight);
 
-    // Amber fill light
+    // Station ambient fill lights
     const amberLight = new THREE.PointLight(0xff9900, 3.5, 45);
-    amberLight.position.set(-6, 8, 8);
+    amberLight.position.set(-5, 8, 8);
     scene.add(amberLight);
 
-    // Cyan Reactor station light
     const cyanLight = new THREE.PointLight(0x00e5ff, 4, 40);
-    cyanLight.position.set(8, 6, 6);
+    cyanLight.position.set(12, 6, 6);
     scene.add(cyanLight);
 
-    // Emerald Dispatch light
     const emeraldLight = new THREE.PointLight(0x00ff88, 3.5, 40);
     emeraldLight.position.set(36, 6, 6);
     scene.add(emeraldLight);
 
-    // Dynamic photon point light riding the data packet
-    const packetGlowLight = new THREE.PointLight(0xffaa00, 6, 14);
+    // Dynamic photon point light riding directly with the data packet
+    const packetGlowLight = new THREE.PointLight(0xffaa00, 5, 8);
     scene.add(packetGlowLight);
 
-    // --- SCI-FI HANGAR FLOOR & BACKGROUND GANTRY ---
+    // --- SCI-FI HANGAR FLOOR & GANTRY ---
     const gridHelper = new THREE.GridHelper(220, 110, 0xff9900, 0x131d2b);
     gridHelper.position.y = -6.5;
     scene.add(gridHelper);
@@ -141,8 +139,7 @@ export const HeroScene3D: React.FC = () => {
       scene.add(archGroup);
     }
 
-    // --- 1. HEAVY SCI-FI RAILGUN CANNON (SLIDE 2 STAGE) ---
-    // Positioned at X: -25 so it has its own dedicated stage away from Slide 1 and Station 1
+    // --- 1. HEAVY SCI-FI RAILGUN CANNON (POSITIONED AT X: -25) ---
     const cannonMountGroup = new THREE.Group();
     cannonMountGroup.position.set(-25, 0, 0);
 
@@ -160,7 +157,7 @@ export const HeroScene3D: React.FC = () => {
       roughness: 0.2,
     });
 
-    // Hexagonal Base Pedestal
+    // Base Pedestal
     const basePylon = new THREE.Mesh(
       new THREE.CylinderGeometry(3.0, 4.0, 1.8, 6),
       darkTitaniumMat
@@ -177,7 +174,7 @@ export const HeroScene3D: React.FC = () => {
     hazardRing.position.y = -1.2;
     cannonMountGroup.add(hazardRing);
 
-    // Turret Yaw Turntable (Aims with Mouse X)
+    // Yaw Turret
     const yawTurret = new THREE.Group();
     yawTurret.position.y = 0;
     const turntableGeo = new THREE.CylinderGeometry(2.4, 2.6, 0.8, 16);
@@ -185,7 +182,7 @@ export const HeroScene3D: React.FC = () => {
     turntable.position.y = -0.2;
     yawTurret.add(turntable);
 
-    // Turret Side Armor Brackets
+    // Side Armor Brackets
     const bracketGeo = new THREE.BoxGeometry(0.75, 2.8, 2.4);
     const leftBracket = new THREE.Mesh(bracketGeo, darkTitaniumMat);
     leftBracket.position.set(-1.5, 1.1, 0);
@@ -193,11 +190,11 @@ export const HeroScene3D: React.FC = () => {
     rightBracket.position.set(1.5, 1.1, 0);
     yawTurret.add(leftBracket, rightBracket);
 
-    // Movable Pitch Barrel Assembly (Aims with Mouse Y)
+    // Movable Pitch Barrel Assembly
     const pitchAssembly = new THREE.Group();
     pitchAssembly.position.set(0, 1.1, 0);
 
-    // Twin Magnetic Accelerator Rails
+    // Twin Accelerator Rails
     const railGeo = new THREE.BoxGeometry(6.6, 0.4, 0.55);
     const topRail = new THREE.Mesh(railGeo, darkTitaniumMat);
     topRail.position.set(3.3, 0.6, 0);
@@ -205,14 +202,14 @@ export const HeroScene3D: React.FC = () => {
     btmRail.position.set(3.3, -0.6, 0);
     pitchAssembly.add(topRail, btmRail);
 
-    // Heavy Central Breech Core
+    // Breech Core
     const breechGeo = new THREE.CylinderGeometry(0.95, 1.2, 2.4, 16);
     breechGeo.rotateZ(Math.PI / 2);
     const breech = new THREE.Mesh(breechGeo, darkTitaniumMat);
     breech.position.x = 0.5;
     pitchAssembly.add(breech);
 
-    // Magnetic Accelerator Coils (Glow Amber/Orange)
+    // Magnetic Accelerator Coils
     const coilMat = new THREE.MeshStandardMaterial({
       color: 0xff9900,
       emissive: 0xff6600,
@@ -231,7 +228,7 @@ export const HeroScene3D: React.FC = () => {
       coilMeshes.push(coil);
     }
 
-    // Heavy Muzzle Emitter
+    // Heavy Muzzle Emitter (Positioned at X = 6.6 relative to gun -> World X = -18.4)
     const muzzleGeo = new THREE.CylinderGeometry(1.05, 0.8, 1.0, 16);
     muzzleGeo.rotateZ(-Math.PI / 2);
     const muzzle = new THREE.Mesh(
@@ -263,16 +260,18 @@ export const HeroScene3D: React.FC = () => {
     scene.add(cannonMountGroup);
 
     // --- 2. THICK VISIBLE INDUSTRIAL GLASS CONDUIT ---
-    // Generously spaced 3D spline across the stations
+    // Smooth, straight coaxial entry through Station 1 to eliminate any shift or kink!
     const splinePoints = [
       new THREE.Vector3(-18.4, 1.1, 0),    // Muzzle exit (-25 + 6.6)
-      new THREE.Vector3(-12.0, 1.4, -1.2), // Approaching Station 1
-      new THREE.Vector3(-6.0, 0.0, 0),     // Station 1: Ingestion
-      new THREE.Vector3(1.0, -1.6, 2.0),   // Transition banking
-      new THREE.Vector3(8.0, 0.5, 0),      // Station 2: V8 DAG Reactor
-      new THREE.Vector3(15.0, 2.2, -1.8),  // High elevation S-curve
-      new THREE.Vector3(22.0, 0.0, 0),     // Station 3: BullMQ Queue
-      new THREE.Vector3(29.0, -1.5, 1.6),  // Lower swoop
+      new THREE.Vector3(-14.0, 0.0, 0),    // Smooth descent to conduit level
+      new THREE.Vector3(-10.0, 0.0, 0),    // Straight coaxial line into Station 1
+      new THREE.Vector3(-5.0, 0.0, 0),     // Station 1: Ingestion Gateway center
+      new THREE.Vector3(0.0, 0.0, 0),      // Straight coaxial exit from Station 1
+      new THREE.Vector3(6.0, -1.5, 1.8),   // Smooth gradual banking curve
+      new THREE.Vector3(12.0, 0.5, 0),     // Station 2: V8 DAG Reactor
+      new THREE.Vector3(18.0, 2.0, -1.8),  // High elevation S-curve
+      new THREE.Vector3(24.0, 0.0, 0),     // Station 3: BullMQ Queue
+      new THREE.Vector3(30.0, -1.2, 1.5),  // Lower swoop
       new THREE.Vector3(36.0, 0.5, 0),     // Station 4: Dispatch Bay
       new THREE.Vector3(40.0, -1.0, 0),    // Exit swoop
       new THREE.Vector3(42.0, -8.0, 0),    // Sub-floor plunge
@@ -305,7 +304,8 @@ export const HeroScene3D: React.FC = () => {
     const innerCoreMesh = new THREE.Mesh(innerCoreGeo, innerCoreMat);
     scene.add(innerCoreMesh);
 
-    // Clamping Titanium Rings
+    // Support Collars
+    const collarsGroup = new THREE.Group();
     const collarGeo = new THREE.TorusGeometry(0.85, 0.12, 12, 24);
     collarGeo.rotateY(Math.PI / 2);
     const collarMat = new THREE.MeshStandardMaterial({
@@ -328,22 +328,23 @@ export const HeroScene3D: React.FC = () => {
       const collar = new THREE.Mesh(collarGeo, collarMat);
       collar.position.copy(pt);
       collar.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), tangent);
-      scene.add(collar);
+      collarsGroup.add(collar);
 
       if (Math.round(t * 100) % 2 === 0) {
         const pylon = new THREE.Mesh(pylonGeo, pylonMat);
         pylon.position.set(pt.x, (pt.y - 6.5) / 2, pt.z);
         pylon.scale.y = Math.abs(pt.y - (-6.5)) / 6.0;
-        scene.add(pylon);
+        collarsGroup.add(pylon);
       }
     }
+    scene.add(collarsGroup);
 
     // --- 3. THE 4 INDUSTRIAL DOCKING STATIONS ---
     const stationsGroup = new THREE.Group();
 
-    // STATION 1: INGESTION & SSRF GATEWAY (at -6.0, 0, 0)
+    // STATION 1: INGESTION & SSRF GATEWAY (at -5.0, 0, 0)
     const st1 = new THREE.Group();
-    st1.position.set(-6.0, 0, 0);
+    st1.position.set(-5.0, 0, 0);
 
     const st1RingMat = new THREE.MeshStandardMaterial({
       color: 0xff9900,
@@ -364,9 +365,9 @@ export const HeroScene3D: React.FC = () => {
     st1.add(st1OuterFrame, st1InnerScanner);
     stationsGroup.add(st1);
 
-    // STATION 2: V8 IN-MEMORY DAG REACTOR (at 8.0, 0.5, 0)
+    // STATION 2: V8 IN-MEMORY DAG REACTOR (at 12.0, 0.5, 0)
     const st2 = new THREE.Group();
-    st2.position.set(8.0, 0.5, 0);
+    st2.position.set(12.0, 0.5, 0);
 
     const st2Core = new THREE.Mesh(
       new THREE.CylinderGeometry(2.4, 2.4, 3.8, 16),
@@ -399,9 +400,9 @@ export const HeroScene3D: React.FC = () => {
     st2.add(st2Core, st2CyanRing1, st2CyanRing2);
     stationsGroup.add(st2);
 
-    // STATION 3: BULLMQ DISTRIBUTED QUEUE BUFFER (at 22.0, 0, 0)
+    // STATION 3: BULLMQ DISTRIBUTED QUEUE BUFFER (at 24.0, 0, 0)
     const st3 = new THREE.Group();
-    st3.position.set(22.0, 0, 0);
+    st3.position.set(24.0, 0, 0);
 
     const st3SiloMat = new THREE.MeshStandardMaterial({
       color: 0x1b2434,
@@ -453,31 +454,72 @@ export const HeroScene3D: React.FC = () => {
 
     scene.add(stationsGroup);
 
-    // --- 4. GLOWING HIGH-ENERGY DATA PACKET ---
+    // --- 4. ULTRA-BRIGHT HIGH-ENERGY DATA PACKET & TRANSFER SHINE TRAIL ---
     const packetGroup = new THREE.Group();
 
+    // Pure Blinding White Energy Core
     const packetCore = new THREE.Mesh(
-      new THREE.SphereGeometry(0.42, 24, 24),
-      new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        emissive: 0xffbb00,
-        emissiveIntensity: 4.5,
-      })
+      new THREE.SphereGeometry(0.38, 24, 24),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
     );
     packetGroup.add(packetCore);
 
+    // Mid Electric Cyan Plasma Corona
     const coronaMat = new THREE.MeshBasicMaterial({
-      color: 0xff7700,
+      color: 0x00e5ff,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.85,
     });
     const packetCorona = new THREE.Mesh(
-      new THREE.SphereGeometry(0.72, 16, 16),
+      new THREE.SphereGeometry(0.65, 16, 16),
       coronaMat
     );
     packetGroup.add(packetCorona);
 
+    // Outer Radiant Golden Plasma Flare (Additive Blending)
+    const auraMat = new THREE.MeshBasicMaterial({
+      color: 0xffaa00,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending,
+    });
+    const packetAura = new THREE.Mesh(
+      new THREE.SphereGeometry(1.05, 16, 16),
+      auraMat
+    );
+    packetGroup.add(packetAura);
+
+    // Shockwave Transfer Ring Pulsing along the Conduit
+    const shockwaveMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+    });
+    const shockwaveRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.68, 0.05, 12, 24),
+      shockwaveMat
+    );
+    shockwaveRing.rotateY(Math.PI / 2);
+    packetGroup.add(shockwaveRing);
+
     scene.add(packetGroup);
+
+    // Glowing Trailing Energy Transfer Beads (Trailing shockwave tail)
+    const trailBeads: THREE.Mesh[] = [];
+    for (let b = 0; b < 4; b++) {
+      const bead = new THREE.Mesh(
+        new THREE.SphereGeometry(0.28 - b * 0.05, 12, 12),
+        new THREE.MeshBasicMaterial({
+          color: b % 2 === 0 ? 0x00e5ff : 0xff9900,
+          transparent: true,
+          opacity: 0.6 - b * 0.12,
+          blending: THREE.AdditiveBlending,
+        })
+      );
+      scene.add(bead);
+      trailBeads.push(bead);
+    }
 
     // --- MOUSE TRACKING FOR CANNON AIMING ---
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
@@ -498,18 +540,27 @@ export const HeroScene3D: React.FC = () => {
       const totalScroll = scrollContainer.scrollHeight - window.innerHeight;
       if (totalScroll <= 0) return;
       const progress = Math.min(Math.max(-containerRect.top / totalScroll, 0), 1);
-      targetT = progress;
       setScrollProgress(progress);
 
-      // Station triggers along the scroll runway
-      if (progress >= 0.28 && progress < 0.48) {
-        setActiveStation(1);
-      } else if (progress >= 0.48 && progress < 0.68) {
-        setActiveStation(2);
-      } else if (progress >= 0.68 && progress < 0.84) {
-        setActiveStation(3);
-      } else if (progress >= 0.84 && progress <= 0.96) {
-        setActiveStation(4);
+      // PACKET LAUNCH SYNCHRONIZATION:
+      // Scroll 0.00 to 0.18: Slide 1 (Initial Hero) -> Slide 2 (Launcher Turret Deck)
+      // The packet stays docked right inside the muzzle of the gun (targetT = 0)
+      // Scroll 0.18 to 0.92: The packet launches directly from the gun muzzle and glides along the conduit!
+      if (progress < 0.18) {
+        targetT = 0.0;
+      } else {
+        targetT = Math.min(Math.max((progress - 0.18) / (0.92 - 0.18), 0), 1);
+      }
+
+      // Station triggers based on exact packet arrival along conduit
+      if (targetT >= 0.16 && targetT < 0.38) {
+        setActiveStation(1); // Station 1: Ingestion
+      } else if (targetT >= 0.38 && targetT < 0.62) {
+        setActiveStation(2); // Station 2: V8 Reactor
+      } else if (targetT >= 0.62 && targetT < 0.82) {
+        setActiveStation(3); // Station 3: BullMQ Queue
+      } else if (targetT >= 0.82 && targetT <= 0.98) {
+        setActiveStation(4); // Station 4: Dispatch Bay
       } else {
         setActiveStation(null);
       }
@@ -526,7 +577,7 @@ export const HeroScene3D: React.FC = () => {
       yawTurret.rotation.y = mouse.x * 0.45;
       pitchAssembly.rotation.z = mouse.y * 0.35;
 
-      // Coil Pulsation
+      // Coil Pulsation & Charging
       coilMeshes.forEach((mesh, i) => {
         mesh.scale.setScalar(1 + Math.sin(time * 6 + i * 1.2) * 0.09);
       });
@@ -541,25 +592,46 @@ export const HeroScene3D: React.FC = () => {
       st4EmitterRing.rotation.x = time * 0.8;
 
       // Slow-Motion Scroll Interpolation
-      currentT += (targetT - currentT) * 0.065;
+      currentT += (targetT - currentT) * 0.075;
 
-      const clampedT = Math.min(Math.max(currentT, 0.001), 0.999);
+      const clampedT = Math.min(Math.max(currentT, 0.0001), 0.9999);
       const packetPos = conduitSpline.getPointAt(clampedT);
 
+      // Packet Position & Synchronized Internal Glow
       packetGroup.position.copy(packetPos);
       packetGlowLight.position.copy(packetPos);
-      packetCorona.scale.setScalar(1 + Math.sin(time * 9) * 0.16);
+
+      // Energy Pulsing & Shockwave Rippling
+      packetCorona.scale.setScalar(1 + Math.sin(time * 10) * 0.18);
+      packetAura.scale.setScalar(1 + Math.sin(time * 12) * 0.22);
+      shockwaveRing.scale.setScalar(1 + Math.sin(time * 14) * 0.25);
+
+      // Trailing Energy Transfer Beads (Show data transferring visibly through the tube)
+      trailBeads.forEach((bead, idx) => {
+        const trailOffset = (idx + 1) * 0.016;
+        const trailT = Math.max(clampedT - trailOffset, 0.0001);
+        const trailPos = conduitSpline.getPointAt(trailT);
+        bead.position.copy(trailPos);
+        bead.visible = currentT > 0.01;
+      });
+
+      // SCENE VISIBILITY: HIDE RAILGUN & STATIONS ON SLIDE 1 TO KEEP INITIAL VIEW SPACIOUS & UNCONGESTED
+      const isInitialSlide = currentT < 0.01 && targetT < 0.01;
+      cannonMountGroup.visible = !isInitialSlide;
+      glassTubeMesh.visible = !isInitialSlide;
+      innerCoreMesh.visible = !isInitialSlide;
+      stationsGroup.visible = !isInitialSlide;
+      collarsGroup.visible = !isInitialSlide;
+      packetGroup.visible = !isInitialSlide;
 
       // CINEMATIC STAGE-BY-STAGE CAMERA CHOREOGRAPHY
-      if (currentT < 0.08) {
-        // STAGE 1: EXPANSIVE EDITORIAL PERSPECTIVE (SLIDE 1 - CLEAN, SPACIOUS)
-        // Camera is pulled back to give full breathing room to Slide 1 typography
+      if (currentT < 0.02) {
+        // STAGE 1: EXPANSIVE EDITORIAL PERSPECTIVE (SLIDE 1 - CLEAN, SPACIOUS, UNCLUTTERED)
         const slide1CamPos = new THREE.Vector3(0, 5.0, 22.0);
         camera.position.lerp(slide1CamPos, 0.08);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
-      } else if (currentT >= 0.08 && currentT < 0.22) {
+      } else if (currentT >= 0.02 && currentT < 0.12) {
         // STAGE 2: RAILGUN LAUNCHER DECK (SLIDE 2 - THE GUN HAS ITS OWN STAGE)
-        // Camera swoops close to frame the movable Railgun Cannon
         const cannonCamPos = new THREE.Vector3(-21.5, 3.2, 8.5);
         camera.position.lerp(cannonCamPos, 0.08);
         camera.lookAt(new THREE.Vector3(-18.0, 1.2, 0));
@@ -569,7 +641,7 @@ export const HeroScene3D: React.FC = () => {
         camera.position.lerp(exitCamPos, 0.07);
         camera.lookAt(packetPos);
       } else {
-        // STAGE 3: CONDUIT ESCORT (CINEMATIC 3RD-PERSON FOLLOW CAM)
+        // STAGE 3: CONDUIT ESCORT (CINEMATIC 3RD-PERSON FOLLOW CAM CENTERING THE PACKET)
         const cameraOffset = new THREE.Vector3(-4.8, 3.2, 8.2);
         const targetCamPos = packetPos.clone().add(cameraOffset);
         camera.position.lerp(targetCamPos, 0.07);
@@ -603,7 +675,7 @@ export const HeroScene3D: React.FC = () => {
   const station = activeStation ? STATIONS[activeStation] : null;
 
   // Slide 2 (Gun Stage) indicator active state
-  const isGunStage = scrollProgress >= 0.08 && scrollProgress < 0.25;
+  const isGunStage = scrollProgress >= 0.06 && scrollProgress < 0.22;
 
   return (
     <div ref={scrollContainerRef} className="relative w-full h-[500vh] bg-[#070A0F]">
@@ -613,13 +685,13 @@ export const HeroScene3D: React.FC = () => {
         <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-crosshair" />
 
         {/* ============================================================ */}
-        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-10%) */}
+        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-8%) */}
         {/* ============================================================ */}
         <div
           style={{
-            opacity: Math.max(0, 1 - scrollProgress * 10),
+            opacity: Math.max(0, 1 - scrollProgress * 12),
             transform: `translateY(${-scrollProgress * 220}px)`,
-            pointerEvents: scrollProgress > 0.08 ? "none" : "auto",
+            pointerEvents: scrollProgress > 0.06 ? "none" : "auto",
           }}
           className="absolute inset-0 z-20 flex flex-col justify-between px-8 sm:px-16 pt-32 pb-14 transition-all duration-75 select-none"
         >
@@ -695,7 +767,7 @@ export const HeroScene3D: React.FC = () => {
         </div>
 
         {/* ============================================================ */}
-        {/* SLIDE 2: THE 3D LAUNCHER TURRET STAGE (SCROLL 10-25%) */}
+        {/* SLIDE 2: THE 3D LAUNCHER TURRET STAGE (SCROLL 6-22%) */}
         {/* ============================================================ */}
         {isGunStage && (
           <div className="absolute top-28 left-8 sm:left-14 z-20 max-w-lg space-y-4 animate-in fade-in duration-300 pointer-events-none">
@@ -709,12 +781,12 @@ export const HeroScene3D: React.FC = () => {
                 Magnetic Particle Cannon
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                Aim the launcher turret with your mouse. Scroll down to charge the magnetic stator coils and fire the high-energy data payload into the thick glass conduit.
+                Aim the launcher turret with your mouse. Scroll down to fire the payload directly from the gun muzzle into the thick glass conduit.
               </p>
               <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-amber-400">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                  Turret Aim: Active
+                  Loaded at Muzzle
                 </span>
                 <span>Scroll to launch &rarr;</span>
               </div>
@@ -725,7 +797,7 @@ export const HeroScene3D: React.FC = () => {
         {/* ============================================================ */}
         {/* FLIGHT PROGRESS BAR (Active during conduit escort) */}
         {/* ============================================================ */}
-        {scrollProgress > 0.15 && (
+        {scrollProgress > 0.18 && (
           <div className="absolute top-24 left-0 right-0 z-20 flex items-center justify-between px-8 sm:px-14 pointer-events-none animate-in fade-in duration-200">
             <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
