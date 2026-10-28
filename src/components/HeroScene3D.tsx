@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Zap, ShieldCheck, Send, Radio, ChevronDown, Activity, Cpu, ArrowRight } from "lucide-react";
+import { Zap, ShieldCheck, Send, Radio, ChevronDown, Activity, Cpu, ArrowRight, Play } from "lucide-react";
 
 interface StationInfo {
   index: string;
@@ -64,10 +64,10 @@ export const HeroScene3D: React.FC = () => {
 
     // --- THREE.JS SCENE INITIALIZATION ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070a0f, 0.022);
+    scene.fog = new THREE.FogExp2(0x070a0f, 0.018);
 
     const camera = new THREE.PerspectiveCamera(
-      46,
+      45,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
@@ -84,50 +84,49 @@ export const HeroScene3D: React.FC = () => {
     renderer.setClearColor(0x070a0f, 1);
     container.appendChild(renderer.domElement);
 
-    // --- DRAMATIC STUDIO LIGHTING RIG (MATCHING LUXURY EDITORIAL REF) ---
+    // --- LIGHTING RIG ---
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
 
-    const keySun = new THREE.DirectionalLight(0xfffaed, 2.2);
+    const keySun = new THREE.DirectionalLight(0xfffaed, 2.4);
     keySun.position.set(15, 30, 20);
     scene.add(keySun);
 
-    // Striking Crimson/Scarlet Studio Rim Light (highlighting the left cannon like the car taillight)
-    const crimsonRimLight = new THREE.PointLight(0xff2a1a, 6.5, 35);
-    crimsonRimLight.position.set(-20, 3.5, 6);
+    // Crimson studio rim light on the launcher deck
+    const crimsonRimLight = new THREE.PointLight(0xff3311, 6.0, 35);
+    crimsonRimLight.position.set(-28, 4, 8);
     scene.add(crimsonRimLight);
 
-    // Amber Gantry Fill Light
-    const amberHangarLight = new THREE.PointLight(0xff9900, 3.5, 45);
-    amberHangarLight.position.set(-10, 8, 8);
-    scene.add(amberHangarLight);
+    // Amber fill light
+    const amberLight = new THREE.PointLight(0xff9900, 3.5, 45);
+    amberLight.position.set(-6, 8, 8);
+    scene.add(amberLight);
 
-    // Cyan Reactor Station Light
-    const cyanReactorLight = new THREE.PointLight(0x00e5ff, 4, 40);
-    cyanReactorLight.position.set(8, 6, 6);
-    scene.add(cyanReactorLight);
+    // Cyan Reactor station light
+    const cyanLight = new THREE.PointLight(0x00e5ff, 4, 40);
+    cyanLight.position.set(8, 6, 6);
+    scene.add(cyanLight);
 
-    // Emerald Dispatch Light
-    const emeraldExitLight = new THREE.PointLight(0x00ff88, 3.5, 40);
-    emeraldExitLight.position.set(30, 6, 6);
-    scene.add(emeraldExitLight);
+    // Emerald Dispatch light
+    const emeraldLight = new THREE.PointLight(0x00ff88, 3.5, 40);
+    emeraldLight.position.set(36, 6, 6);
+    scene.add(emeraldLight);
 
     // Dynamic photon point light riding the data packet
     const packetGlowLight = new THREE.PointLight(0xffaa00, 6, 14);
     scene.add(packetGlowLight);
 
-    // --- DARK REFLECTIVE FLOOR & INDUSTRIAL GANTRY ---
-    const gridHelper = new THREE.GridHelper(180, 90, 0xff3b20, 0x141f2e);
+    // --- SCI-FI HANGAR FLOOR & BACKGROUND GANTRY ---
+    const gridHelper = new THREE.GridHelper(220, 110, 0xff9900, 0x131d2b);
     gridHelper.position.y = -6.5;
     scene.add(gridHelper);
 
-    // Background Gantry Structure
     const gantryMat = new THREE.MeshStandardMaterial({
       color: 0x111927,
       metalness: 0.9,
       roughness: 0.4,
     });
-    for (let x = -25; x <= 35; x += 15) {
+    for (let x = -35; x <= 45; x += 16) {
       const archGroup = new THREE.Group();
       archGroup.position.set(x, 0, -8);
       const pillarGeo = new THREE.BoxGeometry(0.8, 22, 0.8);
@@ -142,10 +141,10 @@ export const HeroScene3D: React.FC = () => {
       scene.add(archGroup);
     }
 
-    // --- 1. HEAVY SCI-FI RAILGUN CANNON (STATION 0 - COMMANDING LEFT SIDE) ---
-    // Positioned at X: -14 to dominate the left 45% of the frame
+    // --- 1. HEAVY SCI-FI RAILGUN CANNON (SLIDE 2 STAGE) ---
+    // Positioned at X: -25 so it has its own dedicated stage away from Slide 1 and Station 1
     const cannonMountGroup = new THREE.Group();
-    cannonMountGroup.position.set(-14, 0, 0);
+    cannonMountGroup.position.set(-25, 0, 0);
 
     const darkTitaniumMat = new THREE.MeshStandardMaterial({
       color: 0x141c2b,
@@ -154,14 +153,14 @@ export const HeroScene3D: React.FC = () => {
     });
 
     const crimsonAccentMat = new THREE.MeshStandardMaterial({
-      color: 0xff2a1a,
+      color: 0xff3311,
       emissive: 0xff1a0a,
       emissiveIntensity: 0.8,
       metalness: 0.7,
       roughness: 0.2,
     });
 
-    // Heavy Hexagonal Base Pedestal
+    // Hexagonal Base Pedestal
     const basePylon = new THREE.Mesh(
       new THREE.CylinderGeometry(3.0, 4.0, 1.8, 6),
       darkTitaniumMat
@@ -169,7 +168,7 @@ export const HeroScene3D: React.FC = () => {
     basePylon.position.y = -1.2;
     cannonMountGroup.add(basePylon);
 
-    // Crimson Trim Ring on Pedestal
+    // Hazard Trim Ring
     const hazardRing = new THREE.Mesh(
       new THREE.TorusGeometry(3.4, 0.15, 8, 6),
       crimsonAccentMat
@@ -178,7 +177,7 @@ export const HeroScene3D: React.FC = () => {
     hazardRing.position.y = -1.2;
     cannonMountGroup.add(hazardRing);
 
-    // Heavy Turret Yaw Turntable (Rotates with Mouse X)
+    // Turret Yaw Turntable (Aims with Mouse X)
     const yawTurret = new THREE.Group();
     yawTurret.position.y = 0;
     const turntableGeo = new THREE.CylinderGeometry(2.4, 2.6, 0.8, 16);
@@ -194,7 +193,7 @@ export const HeroScene3D: React.FC = () => {
     rightBracket.position.set(1.5, 1.1, 0);
     yawTurret.add(leftBracket, rightBracket);
 
-    // Movable Pitch Barrel Assembly (Pivots with Mouse Y)
+    // Movable Pitch Barrel Assembly (Aims with Mouse Y)
     const pitchAssembly = new THREE.Group();
     pitchAssembly.position.set(0, 1.1, 0);
 
@@ -213,11 +212,11 @@ export const HeroScene3D: React.FC = () => {
     breech.position.x = 0.5;
     pitchAssembly.add(breech);
 
-    // Magnetic Flux Accelerator Coils (Glow Crimson/Amber)
+    // Magnetic Accelerator Coils (Glow Amber/Orange)
     const coilMat = new THREE.MeshStandardMaterial({
-      color: 0xff3b20,
-      emissive: 0xff2200,
-      emissiveIntensity: 2.5,
+      color: 0xff9900,
+      emissive: 0xff6600,
+      emissiveIntensity: 2.2,
       metalness: 0.3,
       roughness: 0.2,
     });
@@ -232,14 +231,14 @@ export const HeroScene3D: React.FC = () => {
       coilMeshes.push(coil);
     }
 
-    // Heavy Muzzle Emitter Cone
+    // Heavy Muzzle Emitter
     const muzzleGeo = new THREE.CylinderGeometry(1.05, 0.8, 1.0, 16);
     muzzleGeo.rotateZ(-Math.PI / 2);
     const muzzle = new THREE.Mesh(
       muzzleGeo,
       new THREE.MeshStandardMaterial({
-        color: 0xff5500,
-        emissive: 0xff3300,
+        color: 0xffaa00,
+        emissive: 0xff8800,
         emissiveIntensity: 2.8,
       })
     );
@@ -248,7 +247,7 @@ export const HeroScene3D: React.FC = () => {
 
     // Targeting Laser Line
     const laserMat = new THREE.LineBasicMaterial({
-      color: 0xff2a1a,
+      color: 0xff5500,
       transparent: true,
       opacity: 0.75,
     });
@@ -264,24 +263,24 @@ export const HeroScene3D: React.FC = () => {
     scene.add(cannonMountGroup);
 
     // --- 2. THICK VISIBLE INDUSTRIAL GLASS CONDUIT ---
-    // Spline spanning from Cannon Muzzle through the 4 Stations
+    // Generously spaced 3D spline across the stations
     const splinePoints = [
-      new THREE.Vector3(-7.4, 1.1, 0),    // Cannon Muzzle entry
-      new THREE.Vector3(-4.0, 1.3, -1.2), // Approaching Station 1
-      new THREE.Vector3(0.0, 0.0, 0),     // Station 1: Ingestion
-      new THREE.Vector3(5.0, -1.6, 2.0),  // Banking curve
-      new THREE.Vector3(11.0, 0.5, 0),    // Station 2: V8 DAG Reactor
-      new THREE.Vector3(17.0, 2.2, -1.8), // S-curve
-      new THREE.Vector3(23.0, 0.0, 0),    // Station 3: BullMQ Queue
-      new THREE.Vector3(28.0, -1.5, 1.6), // Swoop
-      new THREE.Vector3(34.0, 0.5, 0),    // Station 4: Dispatch Bay
-      new THREE.Vector3(38.0, -1.0, 0),   // Exit swoop
-      new THREE.Vector3(40.0, -8.0, 0),   // Sub-floor plunge
+      new THREE.Vector3(-18.4, 1.1, 0),    // Muzzle exit (-25 + 6.6)
+      new THREE.Vector3(-12.0, 1.4, -1.2), // Approaching Station 1
+      new THREE.Vector3(-6.0, 0.0, 0),     // Station 1: Ingestion
+      new THREE.Vector3(1.0, -1.6, 2.0),   // Transition banking
+      new THREE.Vector3(8.0, 0.5, 0),      // Station 2: V8 DAG Reactor
+      new THREE.Vector3(15.0, 2.2, -1.8),  // High elevation S-curve
+      new THREE.Vector3(22.0, 0.0, 0),     // Station 3: BullMQ Queue
+      new THREE.Vector3(29.0, -1.5, 1.6),  // Lower swoop
+      new THREE.Vector3(36.0, 0.5, 0),     // Station 4: Dispatch Bay
+      new THREE.Vector3(40.0, -1.0, 0),    // Exit swoop
+      new THREE.Vector3(42.0, -8.0, 0),    // Sub-floor plunge
     ];
     const conduitSpline = new THREE.CatmullRomCurve3(splinePoints);
 
-    // Heavy Glass Tube (Radius 0.72)
-    const glassTubeGeo = new THREE.TubeGeometry(conduitSpline, 220, 0.72, 20, false);
+    // Heavy PBR Refractive Glass Pipe (Radius 0.72)
+    const glassTubeGeo = new THREE.TubeGeometry(conduitSpline, 240, 0.72, 20, false);
     const thickGlassMat = new THREE.MeshPhysicalMaterial({
       color: 0x1d2c3f,
       metalness: 0.15,
@@ -296,8 +295,8 @@ export const HeroScene3D: React.FC = () => {
     const glassTubeMesh = new THREE.Mesh(glassTubeGeo, thickGlassMat);
     scene.add(glassTubeMesh);
 
-    // Inner Glowing Conduit Wire
-    const innerCoreGeo = new THREE.TubeGeometry(conduitSpline, 180, 0.08, 8, false);
+    // Inner Glowing Conduit Filament
+    const innerCoreGeo = new THREE.TubeGeometry(conduitSpline, 200, 0.08, 8, false);
     const innerCoreMat = new THREE.MeshBasicMaterial({
       color: 0xffaa00,
       transparent: true,
@@ -306,7 +305,7 @@ export const HeroScene3D: React.FC = () => {
     const innerCoreMesh = new THREE.Mesh(innerCoreGeo, innerCoreMat);
     scene.add(innerCoreMesh);
 
-    // Titanium Support Collars
+    // Clamping Titanium Rings
     const collarGeo = new THREE.TorusGeometry(0.85, 0.12, 12, 24);
     collarGeo.rotateY(Math.PI / 2);
     const collarMat = new THREE.MeshStandardMaterial({
@@ -322,7 +321,7 @@ export const HeroScene3D: React.FC = () => {
       roughness: 0.4,
     });
 
-    for (let t = 0.04; t < 0.92; t += 0.065) {
+    for (let t = 0.04; t < 0.92; t += 0.06) {
       const pt = conduitSpline.getPointAt(t);
       const tangent = conduitSpline.getTangentAt(t);
 
@@ -342,9 +341,9 @@ export const HeroScene3D: React.FC = () => {
     // --- 3. THE 4 INDUSTRIAL DOCKING STATIONS ---
     const stationsGroup = new THREE.Group();
 
-    // STATION 1: INGESTION & SSRF GATEWAY (at 0.0, 0, 0)
+    // STATION 1: INGESTION & SSRF GATEWAY (at -6.0, 0, 0)
     const st1 = new THREE.Group();
-    st1.position.set(0.0, 0, 0);
+    st1.position.set(-6.0, 0, 0);
 
     const st1RingMat = new THREE.MeshStandardMaterial({
       color: 0xff9900,
@@ -365,9 +364,9 @@ export const HeroScene3D: React.FC = () => {
     st1.add(st1OuterFrame, st1InnerScanner);
     stationsGroup.add(st1);
 
-    // STATION 2: V8 IN-MEMORY DAG REACTOR (at 11.0, 0.5, 0)
+    // STATION 2: V8 IN-MEMORY DAG REACTOR (at 8.0, 0.5, 0)
     const st2 = new THREE.Group();
-    st2.position.set(11.0, 0.5, 0);
+    st2.position.set(8.0, 0.5, 0);
 
     const st2Core = new THREE.Mesh(
       new THREE.CylinderGeometry(2.4, 2.4, 3.8, 16),
@@ -400,9 +399,9 @@ export const HeroScene3D: React.FC = () => {
     st2.add(st2Core, st2CyanRing1, st2CyanRing2);
     stationsGroup.add(st2);
 
-    // STATION 3: BULLMQ DISTRIBUTED QUEUE BUFFER (at 23.0, 0, 0)
+    // STATION 3: BULLMQ DISTRIBUTED QUEUE BUFFER (at 22.0, 0, 0)
     const st3 = new THREE.Group();
-    st3.position.set(23.0, 0, 0);
+    st3.position.set(22.0, 0, 0);
 
     const st3SiloMat = new THREE.MeshStandardMaterial({
       color: 0x1b2434,
@@ -427,9 +426,9 @@ export const HeroScene3D: React.FC = () => {
     st3.add(siloLeft, siloRight, st3HazardRing);
     stationsGroup.add(st3);
 
-    // STATION 4: MULTI-CHANNEL DISPATCH BAY (at 34.0, 0.5, 0)
+    // STATION 4: MULTI-CHANNEL DISPATCH BAY (at 36.0, 0.5, 0)
     const st4 = new THREE.Group();
-    st4.position.set(34.0, 0.5, 0);
+    st4.position.set(36.0, 0.5, 0);
 
     const st4Hub = new THREE.Mesh(
       new THREE.OctahedronGeometry(2.4, 1),
@@ -461,7 +460,7 @@ export const HeroScene3D: React.FC = () => {
       new THREE.SphereGeometry(0.42, 24, 24),
       new THREE.MeshStandardMaterial({
         color: 0xffffff,
-        emissive: 0xffaa00,
+        emissive: 0xffbb00,
         emissiveIntensity: 4.5,
       })
     );
@@ -502,14 +501,14 @@ export const HeroScene3D: React.FC = () => {
       targetT = progress;
       setScrollProgress(progress);
 
-      // Station triggers
-      if (progress > 0.12 && progress < 0.32) {
+      // Station triggers along the scroll runway
+      if (progress >= 0.28 && progress < 0.48) {
         setActiveStation(1);
-      } else if (progress >= 0.32 && progress < 0.56) {
+      } else if (progress >= 0.48 && progress < 0.68) {
         setActiveStation(2);
-      } else if (progress >= 0.56 && progress < 0.80) {
+      } else if (progress >= 0.68 && progress < 0.84) {
         setActiveStation(3);
-      } else if (progress >= 0.80 && progress <= 0.95) {
+      } else if (progress >= 0.84 && progress <= 0.96) {
         setActiveStation(4);
       } else {
         setActiveStation(null);
@@ -521,18 +520,18 @@ export const HeroScene3D: React.FC = () => {
       animId = requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
 
-      // 1. Mouse Aiming for the Railgun Turret (Pitch & Yaw)
+      // Mouse Aiming for the Railgun Turret (Pitch & Yaw)
       mouse.x += (mouse.targetX - mouse.x) * 0.08;
       mouse.y += (mouse.targetY - mouse.y) * 0.08;
       yawTurret.rotation.y = mouse.x * 0.45;
       pitchAssembly.rotation.z = mouse.y * 0.35;
 
-      // 2. Coil Pulsation and Magnetic Field charging
+      // Coil Pulsation
       coilMeshes.forEach((mesh, i) => {
         mesh.scale.setScalar(1 + Math.sin(time * 6 + i * 1.2) * 0.09);
       });
 
-      // 3. Docking Station Rotational Dynamics
+      // Docking Station Dynamics
       st1OuterFrame.rotation.z = time * 0.4;
       st1InnerScanner.rotation.z = -time * 0.8;
       st2CyanRing1.rotation.z = time * -0.7;
@@ -541,7 +540,7 @@ export const HeroScene3D: React.FC = () => {
       st4Hub.rotation.y = time * 0.5;
       st4EmitterRing.rotation.x = time * 0.8;
 
-      // 4. Slow-Motion Scroll Interpolation (Silky LERP Physics)
+      // Slow-Motion Scroll Interpolation
       currentT += (targetT - currentT) * 0.065;
 
       const clampedT = Math.min(Math.max(currentT, 0.001), 0.999);
@@ -549,22 +548,28 @@ export const HeroScene3D: React.FC = () => {
 
       packetGroup.position.copy(packetPos);
       packetGlowLight.position.copy(packetPos);
-
       packetCorona.scale.setScalar(1 + Math.sin(time * 9) * 0.16);
 
-      // 5. CINEMATIC SLOW-MOTION CAMERA TRACKING
-      if (clampedT < 0.04) {
-        // Asymmetrical Hero Camera: Cannon commands left 45%, leaving right 55% for monumental typography
-        const introCamPos = new THREE.Vector3(-10.5, 2.2, 9.8);
-        camera.position.lerp(introCamPos, 0.08);
-        camera.lookAt(new THREE.Vector3(-7.0, 0.8, 0));
-      } else if (clampedT > 0.88) {
-        // Transition down into section 2
-        const exitCamPos = new THREE.Vector3(34.0, 4.0, 10.0);
+      // CINEMATIC STAGE-BY-STAGE CAMERA CHOREOGRAPHY
+      if (currentT < 0.08) {
+        // STAGE 1: EXPANSIVE EDITORIAL PERSPECTIVE (SLIDE 1 - CLEAN, SPACIOUS)
+        // Camera is pulled back to give full breathing room to Slide 1 typography
+        const slide1CamPos = new THREE.Vector3(0, 5.0, 22.0);
+        camera.position.lerp(slide1CamPos, 0.08);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+      } else if (currentT >= 0.08 && currentT < 0.22) {
+        // STAGE 2: RAILGUN LAUNCHER DECK (SLIDE 2 - THE GUN HAS ITS OWN STAGE)
+        // Camera swoops close to frame the movable Railgun Cannon
+        const cannonCamPos = new THREE.Vector3(-21.5, 3.2, 8.5);
+        camera.position.lerp(cannonCamPos, 0.08);
+        camera.lookAt(new THREE.Vector3(-18.0, 1.2, 0));
+      } else if (currentT > 0.92) {
+        // STAGE 4: TRANSITION DOWN INTO SECTION 2
+        const exitCamPos = new THREE.Vector3(38.0, 4.0, 10.0);
         camera.position.lerp(exitCamPos, 0.07);
         camera.lookAt(packetPos);
       } else {
-        // Smooth Slow-Motion Follow Cam tracking packet
+        // STAGE 3: CONDUIT ESCORT (CINEMATIC 3RD-PERSON FOLLOW CAM)
         const cameraOffset = new THREE.Vector3(-4.8, 3.2, 8.2);
         const targetCamPos = packetPos.clone().add(cameraOffset);
         camera.position.lerp(targetCamPos, 0.07);
@@ -597,91 +602,156 @@ export const HeroScene3D: React.FC = () => {
 
   const station = activeStation ? STATIONS[activeStation] : null;
 
+  // Slide 2 (Gun Stage) indicator active state
+  const isGunStage = scrollProgress >= 0.08 && scrollProgress < 0.25;
+
   return (
-    <div ref={scrollContainerRef} className="relative w-full h-[450vh] bg-[#070A0F]">
+    <div ref={scrollContainerRef} className="relative w-full h-[500vh] bg-[#070A0F]">
       {/* PINNED FULLSCREEN 3D VIEWPORT */}
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         {/* Three.js Canvas Container */}
         <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-crosshair" />
 
-        {/* FULL-BLEED EDITORIAL HERO CONTENT (MATCHING LUXURY REFERENCE IMAGE) */}
+        {/* ============================================================ */}
+        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-10%) */}
+        {/* ============================================================ */}
         <div
           style={{
             opacity: Math.max(0, 1 - scrollProgress * 10),
-            transform: `translateX(${scrollProgress * 220}px)`,
-            pointerEvents: scrollProgress > 0.05 ? "none" : "auto",
+            transform: `translateY(${-scrollProgress * 220}px)`,
+            pointerEvents: scrollProgress > 0.08 ? "none" : "auto",
           }}
-          className="absolute inset-y-0 right-0 w-full lg:w-7/12 flex flex-col justify-center px-8 sm:px-14 lg:pr-24 z-20 transition-all duration-75 select-none"
+          className="absolute inset-0 z-20 flex flex-col justify-between px-8 sm:px-16 pt-32 pb-14 transition-all duration-75 select-none"
         >
-          {/* Eyebrow Tracking Header */}
-          <div className="space-y-1 pb-2">
-            <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-slate-400 font-semibold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#FF3B20] animate-pulse" />
-              IN-MEMORY DAG ARCHITECTURE // ZERO-LATENCY
+          {/* Top Eyebrow Tag */}
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_12px_#ff9900]" />
+            <span className="text-xs font-mono font-bold tracking-[0.25em] text-amber-400 uppercase">
+              AETHELFLOW ORCHESTRATION ENGINE // V2.0
             </span>
           </div>
 
-          {/* MONUMENTAL "BUILT DIFFERENTLY" DISPLAY TYPOGRAPHY */}
-          <div className="space-y-0 tracking-tighter leading-none">
-            <h1 className="text-7xl sm:text-9xl lg:text-[9.5rem] font-black text-[#FF3B20] tracking-tight leading-[0.85] font-['Playfair_Display','Syne'] drop-shadow-[0_12px_45px_rgba(255,59,32,0.35)]">
-              BUILT
+          {/* Main Headline & Narrative (Spacious, Uncluttered, Pure Contrast) */}
+          <div className="max-w-4xl space-y-6">
+            <h1 className="text-4xl sm:text-7xl lg:text-8xl font-extrabold text-white tracking-tight leading-[1.05] font-['Space_Grotesk']">
+              HIGH-PERFORMANCE <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">
+                WORKFLOW AUTOMATION
+              </span>
             </h1>
-            <h2 className="text-5xl sm:text-7xl lg:text-[7.2rem] font-light text-[#EAF6F0] tracking-tight leading-[0.9] font-['Playfair_Display','Space_Grotesk']">
-              DIFFERENTLY
-            </h2>
+
+            <p className="text-base sm:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed font-['Space_Grotesk']">
+              Sub-millisecond in-memory orchestration. Kahn's topological DAG sorting and sandboxed V8 execution operating at 81,000+ ops/sec — completely decoupled from cloud database latency.
+            </p>
+
+            {/* CTAs */}
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              <a
+                href="http://localhost:5173"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-mono text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 shadow-[0_0_30px_rgba(255,153,0,0.4)] transition-all transform hover:scale-105 active:scale-95"
+              >
+                <Play className="w-4 h-4 fill-current text-black" />
+                <span>LAUNCH STUDIO (PORT 5173)</span>
+              </a>
+
+              <a
+                href="#engine-chip"
+                className="inline-flex items-center gap-2 px-7 py-4 rounded-full border border-white/20 hover:border-amber-400 bg-white/5 hover:bg-white/10 text-xs font-mono font-medium text-slate-300 hover:text-white transition-all"
+              >
+                <span>EXPLORE ARCHITECTURE</span>
+                <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+              </a>
+
+              <div className="flex items-center gap-2 text-xs font-mono text-amber-400 pl-2">
+                <ChevronDown className="w-4 h-4 animate-bounce" />
+                <span>Scroll to enter 3D pipeline deck</span>
+              </div>
+            </div>
           </div>
 
-          {/* Subtitle Editorial Narrative */}
-          <p className="pt-6 text-sm sm:text-base text-slate-300 max-w-lg font-normal leading-relaxed font-['Space_Grotesk']">
-            A fresh take on workflow execution — where Kahn's topological DAG sorting meets isolated V8 sandboxing at 81,000+ ops/sec. Decoupled from cloud database latency.
-          </p>
-
-          {/* Minimalist Explore Action Pill */}
-          <div className="pt-8 flex flex-wrap items-center gap-5">
-            <a
-              href="#engine-chip"
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 hover:border-[#FF3B20] bg-black/40 hover:bg-[#FF3B20]/15 text-xs font-mono font-bold uppercase tracking-wider text-white transition-all transform hover:scale-105 active:scale-95 shadow-xl"
-            >
-              <span>EXPLORE PIPELINE</span>
-              <ArrowRight className="w-4 h-4 text-[#FF3B20]" />
-            </a>
-
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-              <ChevronDown className="w-4 h-4 text-[#FF3B20] animate-bounce" />
-              <span>Scroll to fire data packet</span>
+          {/* Bottom Telemetry Metrics Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-white/10 max-w-5xl">
+            <div className="space-y-1">
+              <span className="text-[11px] font-mono uppercase text-slate-500">DAG VELOCITY</span>
+              <div className="text-lg font-bold text-white font-mono">81,151 ops/s</div>
+              <span className="text-[10px] font-mono text-amber-400">+170% Headroom</span>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[11px] font-mono uppercase text-slate-500">ISOLATE LATENCY</span>
+              <div className="text-lg font-bold text-white font-mono">0.012 ms</div>
+              <span className="text-[10px] font-mono text-cyan-400">Topological Sort p50</span>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[11px] font-mono uppercase text-slate-500">QUEUE CONCURRENCY</span>
+              <div className="text-lg font-bold text-white font-mono">2,551 req/s</div>
+              <span className="text-[10px] font-mono text-orange-400">Zero Drops • BullMQ</span>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[11px] font-mono uppercase text-slate-500">SSRF FIREWALL</span>
+              <div className="text-lg font-bold text-white font-mono">Active</div>
+              <span className="text-[10px] font-mono text-emerald-400">Zero-Trust Pre-Flight</span>
             </div>
           </div>
         </div>
 
-        {/* SIDE PAGINATION COUNTER (AS IN LUXURY EDITORIAL REFERENCE) */}
-        <div
-          style={{ opacity: Math.max(0, 1 - scrollProgress * 10) }}
-          className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-1.5 font-mono text-xs text-slate-500 z-20 pointer-events-none"
-        >
-          <span className="text-white font-bold">01</span>
-          <div className="w-5 h-[1.5px] bg-white/20" />
-          <span>04</span>
-        </div>
+        {/* ============================================================ */}
+        {/* SLIDE 2: THE 3D LAUNCHER TURRET STAGE (SCROLL 10-25%) */}
+        {/* ============================================================ */}
+        {isGunStage && (
+          <div className="absolute top-28 left-8 sm:left-14 z-20 max-w-lg space-y-4 animate-in fade-in duration-300 pointer-events-none">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-mono font-bold text-amber-400 shadow-[0_0_20px_rgba(255,153,0,0.2)]">
+              <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+              <span>STAGE 01 // PARTICLE ACCELERATOR TURRET</span>
+            </div>
 
-        {/* BOTTOM-RIGHT PREVIEW THUMBNAIL CARD (MATCHING CAR THUMBNAIL IN REFERENCE IMAGE) */}
-        <div
-          style={{ opacity: Math.max(0, 1 - scrollProgress * 10) }}
-          className="absolute bottom-8 right-8 sm:right-14 z-20 hidden md:flex items-center gap-3.5 p-3.5 rounded-2xl bg-[#090E17]/90 border border-white/15 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-auto"
-        >
-          <div className="w-16 h-14 rounded-xl bg-gradient-to-br from-[#FF3B20]/25 to-amber-500/25 border border-[#FF3B20]/40 flex items-center justify-center overflow-hidden relative">
-            <div className="absolute inset-0 bg-[radial-gradient(#ff3b20_1px,transparent_1px)] [background-size:6px_6px] opacity-40" />
-            <Cpu className="w-6 h-6 text-[#FF3B20] animate-pulse relative z-10" />
+            <div className="p-6 rounded-2xl bg-[#090D16]/90 border border-white/15 backdrop-blur-xl space-y-3 shadow-2xl">
+              <h2 className="text-xl sm:text-2xl font-bold text-white font-['Space_Grotesk']">
+                Magnetic Particle Cannon
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                Aim the launcher turret with your mouse. Scroll down to charge the magnetic stator coils and fire the high-energy data payload into the thick glass conduit.
+              </p>
+              <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-amber-400">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  Turret Aim: Active
+                </span>
+                <span>Scroll to launch &rarr;</span>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col text-left">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">V8 ENGINE CORE</span>
-            <span className="text-xs font-mono font-bold text-white">81,151 ops/s</span>
-            <span className="text-[10px] font-mono text-emerald-400 font-bold">0.012ms • ZERO LATENCY</span>
-          </div>
-        </div>
+        )}
 
-        {/* DYNAMIC STATION ARCHITECTURE HUD CARD (Slides in when reaching Station 1, 2, 3, or 4) */}
+        {/* ============================================================ */}
+        {/* FLIGHT PROGRESS BAR (Active during conduit escort) */}
+        {/* ============================================================ */}
+        {scrollProgress > 0.15 && (
+          <div className="absolute top-24 left-0 right-0 z-20 flex items-center justify-between px-8 sm:px-14 pointer-events-none animate-in fade-in duration-200">
+            <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                <Activity className="w-3.5 h-3.5" />
+                <span>CONDUIT FLIGHT // ACTIVE</span>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4 px-4 py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md text-xs font-mono text-slate-300">
+              <span>PROGRESS: {Math.round(scrollProgress * 100)}%</span>
+              <div className="w-36 h-2 rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-400 rounded-full transition-all duration-75"
+                  style={{ width: `${scrollProgress * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ============================================================ */}
+        {/* DYNAMIC STATION ARCHITECTURE HUD CARD (Slides in at each station) */}
+        {/* ============================================================ */}
         {station && (
-          <div className="absolute bottom-10 left-6 sm:left-12 z-30 max-w-md w-full p-6 rounded-2xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(255,153,0,0.2)] backdrop-blur-2xl animate-in slide-in-from-bottom-6 duration-200 space-y-3 pointer-events-auto">
+          <div className="absolute bottom-10 left-6 sm:left-14 z-30 max-w-md w-full p-6 rounded-2xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(255,153,0,0.2)] backdrop-blur-2xl animate-in slide-in-from-bottom-6 duration-200 space-y-3 pointer-events-auto">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
@@ -718,16 +788,16 @@ export const HeroScene3D: React.FC = () => {
                 Pipeline Stream: Active
               </span>
               <span className="text-amber-400 flex items-center gap-1">
-                Scroll to next node &rarr;
+                Scroll to advance &rarr;
               </span>
             </div>
           </div>
         )}
 
-        {/* BOTTOM LEFT HARDWARE IDENTIFIER */}
-        <div className="absolute bottom-8 left-8 hidden lg:flex items-center gap-3 px-4 py-2 rounded-xl bg-[#090D16]/80 border border-white/10 backdrop-blur-md text-[11px] font-mono text-slate-400">
-          <Activity className="w-3.5 h-3.5 text-[#FF3B20]" />
-          <span>PARTICLE ACCELERATOR // PBR CONDUIT 2.2MM</span>
+        {/* BOTTOM RIGHT: HARDWARE IDENTIFIER */}
+        <div className="absolute bottom-8 right-8 hidden lg:flex items-center gap-3 px-4 py-2 rounded-xl bg-[#090D16]/80 border border-white/10 backdrop-blur-md text-[11px] font-mono text-slate-400">
+          <Cpu className="w-3.5 h-3.5 text-amber-400" />
+          <span>AETHELFLOW KERNEL // V8 IN-MEMORY RUNTIME</span>
         </div>
       </div>
     </div>
