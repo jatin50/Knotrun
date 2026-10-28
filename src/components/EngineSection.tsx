@@ -23,7 +23,7 @@ export const EngineSection: React.FC = () => {
           <Cpu className="w-3.5 h-3.5" />
           <span>V8 DAG Execution Architecture</span>
         </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
           Engineered for Pure In-Memory Velocity
         </h2>
         <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto">
@@ -147,21 +147,21 @@ export const EngineSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Pillar 3: Zero-Trust SSRF Network Gate */}
-          <div className="p-5 rounded-2xl bg-[#090D16]/75 border border-white/10 hover:border-indigo-500/50 transition-all backdrop-blur-xl space-y-2 group">
+          {/* Pillar 3: Zero-Trust SSRF Network Gate (Amber Gold #FF9900) */}
+          <div className="p-5 rounded-2xl bg-[#090D16]/75 border border-white/10 hover:border-amber-500/50 transition-all backdrop-blur-xl space-y-2 group">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
+                <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors font-['Space_Grotesk']">
                   Zero-Trust SSRF Network Gate
                 </h4>
               </div>
-              <span className="text-xs font-mono text-indigo-400 font-semibold">916k ops/s</span>
+              <span className="text-xs font-mono text-amber-400 font-semibold">916k ops/s</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Every HTTP Request and Webhook undergoes pre-flight DNS and IP validation to block malicious requests against AWS metadata endpoints (<code className="text-indigo-300 font-mono">169.254.169.254</code>), loopback, and private LAN ranges.
+              Every HTTP Request and Webhook undergoes pre-flight DNS and IP validation to block malicious requests against AWS metadata endpoints (<code className="text-amber-300 font-mono">169.254.169.254</code>), loopback, and private LAN ranges.
             </p>
           </div>
         </div>

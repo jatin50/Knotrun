@@ -9,18 +9,18 @@ import { Footer } from "./components/Footer";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen bg-[#04060A] text-slate-100 overflow-hidden font-['Plus_Jakarta_Sans'] selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="relative min-h-screen bg-[#070A0F] text-slate-100 overflow-x-hidden font-['Space_Grotesk'] selection:bg-amber-500/30 selection:text-amber-200">
       {/* Background ambient noise grid */}
-      <div className="fixed inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none z-0" />
 
-      {/* THE CONTINUOUS PHYSICS-DRIVEN SCROLL CONDUIT SPINE */}
+      {/* CONTINUOUS PHYSICS-DRIVEN SCROLL CONDUIT SPINE */}
       <ScrollTreeSpine />
 
       {/* Floating Glass Navbar */}
       <Navbar />
 
       <main className="relative z-10 flex flex-col items-center">
-        {/* Section 1: 3D Interactive Pipeline Hero */}
+        {/* Section 1: 3D Interactive Pipeline Hero (Full Width & Height 100vw, 100vh) */}
         <section id="pipeline-3d" className="w-full">
           <HeroScene3D />
         </section>
