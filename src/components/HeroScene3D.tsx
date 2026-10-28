@@ -228,7 +228,7 @@ export const HeroScene3D: React.FC = () => {
       coilMeshes.push(coil);
     }
 
-    // Heavy Muzzle Emitter (Positioned at X = 6.6 relative to gun -> World X = -18.4)
+    // Heavy Muzzle Emitter
     const muzzleGeo = new THREE.CylinderGeometry(1.05, 0.8, 1.0, 16);
     muzzleGeo.rotateZ(-Math.PI / 2);
     const muzzle = new THREE.Mesh(
@@ -476,7 +476,7 @@ export const HeroScene3D: React.FC = () => {
     );
     packetGroup.add(packetCorona);
 
-    // Outer Radiant Golden Plasma Flare (Additive Blending)
+    // Outer Radiant Golden Plasma Flare
     const auraMat = new THREE.MeshBasicMaterial({
       color: 0xffaa00,
       transparent: true,
@@ -489,7 +489,7 @@ export const HeroScene3D: React.FC = () => {
     );
     packetGroup.add(packetAura);
 
-    // Shockwave Transfer Ring Pulsing along the Conduit
+    // Shockwave Transfer Ring
     const shockwaveMat = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
@@ -505,7 +505,7 @@ export const HeroScene3D: React.FC = () => {
 
     scene.add(packetGroup);
 
-    // Glowing Trailing Energy Transfer Beads (Trailing shockwave tail)
+    // Glowing Trailing Energy Transfer Beads
     const trailBeads: THREE.Mesh[] = [];
     for (let b = 0; b < 4; b++) {
       const bead = new THREE.Mesh(
@@ -521,15 +521,16 @@ export const HeroScene3D: React.FC = () => {
       trailBeads.push(bead);
     }
 
-    // --- MOUSE TRACKING FOR CANNON AIMING ---
+    // --- SMOOTH MOUSE TRACKING FOR CANNON AIMING (REDUCED SENSITIVITY) ---
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
     const handleMouseMove = (e: MouseEvent) => {
+      // Reduced sensitivity by 55% for smooth, controlled hydraulic turret aiming
       mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
       mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 2;
     };
     window.addEventListener("mousemove", handleMouseMove);
 
-    // --- SCROLL DRIVER & ANIMATION LOOP ---
+    // --- SCROLL DRIVER & ANIMATION LOOP (CALIBRATED FOR GENTLE, SLOW-MOTION FLIGHT) ---
     let currentT = 0;
     let targetT = 0;
     const clock = new THREE.Clock();
@@ -542,18 +543,18 @@ export const HeroScene3D: React.FC = () => {
       const progress = Math.min(Math.max(-containerRect.top / totalScroll, 0), 1);
       setScrollProgress(progress);
 
-      // PACKET LAUNCH SYNCHRONIZATION:
-      // Scroll 0.00 to 0.18: Slide 1 (Initial Hero) -> Slide 2 (Launcher Turret Deck)
-      // The packet stays docked right inside the muzzle of the gun (targetT = 0)
-      // Scroll 0.18 to 0.92: The packet launches directly from the gun muzzle and glides along the conduit!
-      if (progress < 0.18) {
-        targetT = 0.0;
+      // EXTENDED CALIBRATED STAGES (Generous scroll runway so nothing moves too fast):
+      // 0.00 to 0.20: Slide 1 (Spacious Executive Hero)
+      // 0.20 to 0.35: Slide 2 (Launcher Turret Stage with time to aim)
+      // 0.35 to 0.94: Slow-motion conduit journey from gun to Station 4
+      if (progress < 0.22) {
+        targetT = 0.0; // Payload remains locked inside gun muzzle
       } else {
-        targetT = Math.min(Math.max((progress - 0.18) / (0.92 - 0.18), 0), 1);
+        targetT = Math.min(Math.max((progress - 0.22) / (0.94 - 0.22), 0), 1);
       }
 
-      // Station triggers based on exact packet arrival along conduit
-      if (targetT >= 0.16 && targetT < 0.38) {
+      // Station triggers synchronized with packet travel
+      if (targetT >= 0.15 && targetT < 0.38) {
         setActiveStation(1); // Station 1: Ingestion
       } else if (targetT >= 0.38 && targetT < 0.62) {
         setActiveStation(2); // Station 2: V8 Reactor
@@ -571,28 +572,28 @@ export const HeroScene3D: React.FC = () => {
       animId = requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
 
-      // Mouse Aiming for the Railgun Turret (Pitch & Yaw)
-      mouse.x += (mouse.targetX - mouse.x) * 0.08;
-      mouse.y += (mouse.targetY - mouse.y) * 0.08;
-      yawTurret.rotation.y = mouse.x * 0.45;
-      pitchAssembly.rotation.z = mouse.y * 0.35;
+      // Damped, heavy hydraulic mouse aiming (no sudden twitching or high sensitivity)
+      mouse.x += (mouse.targetX - mouse.x) * 0.04;
+      mouse.y += (mouse.targetY - mouse.y) * 0.04;
+      yawTurret.rotation.y = mouse.x * 0.20; // Reduced angle range
+      pitchAssembly.rotation.z = mouse.y * 0.15;
 
-      // Coil Pulsation & Charging
+      // Gentle coil pulsation
       coilMeshes.forEach((mesh, i) => {
-        mesh.scale.setScalar(1 + Math.sin(time * 6 + i * 1.2) * 0.09);
+        mesh.scale.setScalar(1 + Math.sin(time * 5 + i * 1.2) * 0.08);
       });
 
       // Docking Station Dynamics
-      st1OuterFrame.rotation.z = time * 0.4;
-      st1InnerScanner.rotation.z = -time * 0.8;
-      st2CyanRing1.rotation.z = time * -0.7;
-      st2CyanRing2.rotation.y = time * 0.6;
-      st3HazardRing.rotation.z = time * 0.5;
-      st4Hub.rotation.y = time * 0.5;
-      st4EmitterRing.rotation.x = time * 0.8;
+      st1OuterFrame.rotation.z = time * 0.3;
+      st1InnerScanner.rotation.z = -time * 0.6;
+      st2CyanRing1.rotation.z = time * -0.5;
+      st2CyanRing2.rotation.y = time * 0.45;
+      st3HazardRing.rotation.z = time * 0.4;
+      st4Hub.rotation.y = time * 0.4;
+      st4EmitterRing.rotation.x = time * 0.6;
 
-      // Slow-Motion Scroll Interpolation
-      currentT += (targetT - currentT) * 0.075;
+      // Gentle, weighted slow-motion scroll interpolation (damping factor 0.038)
+      currentT += (targetT - currentT) * 0.038;
 
       const clampedT = Math.min(Math.max(currentT, 0.0001), 0.9999);
       const packetPos = conduitSpline.getPointAt(clampedT);
@@ -602,11 +603,11 @@ export const HeroScene3D: React.FC = () => {
       packetGlowLight.position.copy(packetPos);
 
       // Energy Pulsing & Shockwave Rippling
-      packetCorona.scale.setScalar(1 + Math.sin(time * 10) * 0.18);
-      packetAura.scale.setScalar(1 + Math.sin(time * 12) * 0.22);
-      shockwaveRing.scale.setScalar(1 + Math.sin(time * 14) * 0.25);
+      packetCorona.scale.setScalar(1 + Math.sin(time * 8) * 0.16);
+      packetAura.scale.setScalar(1 + Math.sin(time * 10) * 0.20);
+      shockwaveRing.scale.setScalar(1 + Math.sin(time * 12) * 0.22);
 
-      // Trailing Energy Transfer Beads (Show data transferring visibly through the tube)
+      // Trailing Energy Transfer Beads
       trailBeads.forEach((bead, idx) => {
         const trailOffset = (idx + 1) * 0.016;
         const trailT = Math.max(clampedT - trailOffset, 0.0001);
@@ -624,27 +625,27 @@ export const HeroScene3D: React.FC = () => {
       collarsGroup.visible = !isInitialSlide;
       packetGroup.visible = !isInitialSlide;
 
-      // CINEMATIC STAGE-BY-STAGE CAMERA CHOREOGRAPHY
+      // CINEMATIC STAGE-BY-STAGE CAMERA CHOREOGRAPHY (BUTTERY SMOOTH DAMPING)
       if (currentT < 0.02) {
         // STAGE 1: EXPANSIVE EDITORIAL PERSPECTIVE (SLIDE 1 - CLEAN, SPACIOUS, UNCLUTTERED)
         const slide1CamPos = new THREE.Vector3(0, 5.0, 22.0);
-        camera.position.lerp(slide1CamPos, 0.08);
+        camera.position.lerp(slide1CamPos, 0.045);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
       } else if (currentT >= 0.02 && currentT < 0.12) {
-        // STAGE 2: RAILGUN LAUNCHER DECK (SLIDE 2 - THE GUN HAS ITS OWN STAGE)
+        // STAGE 2: RAILGUN LAUNCHER DECK (SLIDE 2 - DEDICATED CANNON STAGE)
         const cannonCamPos = new THREE.Vector3(-21.5, 3.2, 8.5);
-        camera.position.lerp(cannonCamPos, 0.08);
+        camera.position.lerp(cannonCamPos, 0.045);
         camera.lookAt(new THREE.Vector3(-18.0, 1.2, 0));
       } else if (currentT > 0.92) {
         // STAGE 4: TRANSITION DOWN INTO SECTION 2
         const exitCamPos = new THREE.Vector3(38.0, 4.0, 10.0);
-        camera.position.lerp(exitCamPos, 0.07);
+        camera.position.lerp(exitCamPos, 0.045);
         camera.lookAt(packetPos);
       } else {
         // STAGE 3: CONDUIT ESCORT (CINEMATIC 3RD-PERSON FOLLOW CAM CENTERING THE PACKET)
         const cameraOffset = new THREE.Vector3(-4.8, 3.2, 8.2);
         const targetCamPos = packetPos.clone().add(cameraOffset);
-        camera.position.lerp(targetCamPos, 0.07);
+        camera.position.lerp(targetCamPos, 0.045);
         camera.lookAt(packetPos.clone().add(new THREE.Vector3(2.5, 0, 0)));
       }
 
@@ -674,24 +675,26 @@ export const HeroScene3D: React.FC = () => {
 
   const station = activeStation ? STATIONS[activeStation] : null;
 
-  // Slide 2 (Gun Stage) indicator active state
-  const isGunStage = scrollProgress >= 0.06 && scrollProgress < 0.22;
+  // Slide 2 (Gun Stage) indicator active state (extended comfortable window)
+  const isGunStage = scrollProgress >= 0.10 && scrollProgress < 0.28;
 
   return (
-    <div ref={scrollContainerRef} className="relative w-full h-[500vh] bg-[#070A0F]">
+    // EXTENDED RUNWAY HEIGHT (h-[850vh] gives generous, un-rushed slow-motion scroll depth)
+    <div ref={scrollContainerRef} className="relative w-full h-[850vh] bg-[#070A0F]">
       {/* PINNED FULLSCREEN 3D VIEWPORT */}
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         {/* Three.js Canvas Container */}
         <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-crosshair" />
 
         {/* ============================================================ */}
-        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-8%) */}
+        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-15%) */}
         {/* ============================================================ */}
         <div
           style={{
-            opacity: Math.max(0, 1 - scrollProgress * 12),
-            transform: `translateY(${-scrollProgress * 220}px)`,
-            pointerEvents: scrollProgress > 0.06 ? "none" : "auto",
+            // Gentle fade-out curve (stays comfortable and readable throughout Slide 1)
+            opacity: Math.max(0, 1 - scrollProgress * 5.0),
+            transform: `translateY(${-scrollProgress * 120}px)`,
+            pointerEvents: scrollProgress > 0.12 ? "none" : "auto",
           }}
           className="absolute inset-0 z-20 flex flex-col justify-between px-8 sm:px-16 pt-32 pb-14 transition-all duration-75 select-none"
         >
@@ -736,7 +739,7 @@ export const HeroScene3D: React.FC = () => {
 
               <div className="flex items-center gap-2 text-xs font-mono text-amber-400 pl-2">
                 <ChevronDown className="w-4 h-4 animate-bounce" />
-                <span>Scroll to enter 3D pipeline deck</span>
+                <span>Scroll down to enter 3D pipeline deck</span>
               </div>
             </div>
           </div>
@@ -767,7 +770,7 @@ export const HeroScene3D: React.FC = () => {
         </div>
 
         {/* ============================================================ */}
-        {/* SLIDE 2: THE 3D LAUNCHER TURRET STAGE (SCROLL 6-22%) */}
+        {/* SLIDE 2: THE 3D LAUNCHER TURRET STAGE (SCROLL 10-28%) */}
         {/* ============================================================ */}
         {isGunStage && (
           <div className="absolute top-28 left-8 sm:left-14 z-20 max-w-lg space-y-4 animate-in fade-in duration-300 pointer-events-none">
@@ -781,14 +784,14 @@ export const HeroScene3D: React.FC = () => {
                 Magnetic Particle Cannon
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                Aim the launcher turret with your mouse. Scroll down to fire the payload directly from the gun muzzle into the thick glass conduit.
+                Aim the launcher turret gently with your mouse. Continue scrolling down to charge the magnetic stator coils and fire the payload directly from the gun muzzle into the conduit.
               </p>
               <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-amber-400">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                  Loaded at Muzzle
+                  Turret Armed at Muzzle
                 </span>
-                <span>Scroll to launch &rarr;</span>
+                <span>Scroll to accelerate payload &rarr;</span>
               </div>
             </div>
           </div>
@@ -797,7 +800,7 @@ export const HeroScene3D: React.FC = () => {
         {/* ============================================================ */}
         {/* FLIGHT PROGRESS BAR (Active during conduit escort) */}
         {/* ============================================================ */}
-        {scrollProgress > 0.18 && (
+        {scrollProgress > 0.22 && (
           <div className="absolute top-24 left-0 right-0 z-20 flex items-center justify-between px-8 sm:px-14 pointer-events-none animate-in fade-in duration-200">
             <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
