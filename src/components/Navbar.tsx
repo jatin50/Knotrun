@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Terminal, Menu, X, ExternalLink, ShieldCheck } from "lucide-react";
 import { GithubIcon } from "./GithubIcon";
+import { KnotrunLogo } from "./KnotrunLogo";
 
 interface NavbarProps {
   appUrl?: string;
@@ -19,11 +20,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="flex items-center justify-between px-4 sm:px-8 lg:px-14 py-3 sm:py-4">
         {/* Brand & Left Navigation Links */}
         <div className="flex items-center gap-6 sm:gap-10">
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B20] group-hover:scale-125 transition-transform shadow-[0_0_10px_#ff3b20]" />
-            <span className="font-extrabold text-sm tracking-wider text-white uppercase font-['Space_Grotesk']">
-              Knotrun
-            </span>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <KnotrunLogo variant="icon" size="sm" />
+            <div className="flex items-center">
+              <span className="font-extrabold text-sm tracking-wider text-white uppercase font-['Space_Grotesk']">
+                KNOT
+              </span>
+              <span className="font-extrabold text-sm tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400 uppercase font-['Space_Grotesk']">
+                RUN
+              </span>
+            </div>
             <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
               // v2.0
             </span>
