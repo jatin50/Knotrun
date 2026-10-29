@@ -1017,6 +1017,7 @@ export const HeroScene3D: React.FC = () => {
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -1101,14 +1102,13 @@ export const HeroScene3D: React.FC = () => {
         bead.visible = currentT > 0.01;
       });
 
-      // SCENE VISIBILITY: HIDE RAILGUN & STATIONS ON SLIDE 1 TO KEEP INITIAL VIEW SPACIOUS & UNCONGESTED
-      const isInitialSlide = currentT < 0.01 && targetT < 0.01;
-      cannonMountGroup.visible = !isInitialSlide;
-      glassTubeMesh.visible = !isInitialSlide;
-      innerCoreMesh.visible = !isInitialSlide;
-      stationsGroup.visible = !isInitialSlide;
-      collarsGroup.visible = !isInitialSlide;
-      packetGroup.visible = !isInitialSlide;
+      // SCENE VISIBILITY: All 3D architectural elements remain active and visible
+      cannonMountGroup.visible = true;
+      glassTubeMesh.visible = true;
+      innerCoreMesh.visible = true;
+      stationsGroup.visible = true;
+      collarsGroup.visible = true;
+      packetGroup.visible = true;
 
       // CINEMATIC STAGE-BY-STAGE CAMERA CHOREOGRAPHY (BUTTERY SMOOTH DAMPING)
       const isMob = window.innerWidth < 768;
@@ -1191,7 +1191,7 @@ export const HeroScene3D: React.FC = () => {
             transform: `translateY(${-scrollProgress * 120}px)`,
             pointerEvents: scrollProgress > 0.12 ? "none" : "auto",
           }}
-          className="absolute inset-0 z-20 flex flex-col justify-between px-4 sm:px-16 pt-20 sm:pt-32 pb-3 sm:pb-14 transition-all duration-75 select-none overflow-hidden"
+          className="absolute inset-0 z-20 flex flex-col justify-between px-4 sm:px-16 pt-16 sm:pt-32 pb-4 sm:pb-14 transition-all duration-75 select-none"
         >
           {/* Top Eyebrow Tag */}
           <div className="flex items-center gap-2">

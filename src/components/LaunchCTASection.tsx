@@ -58,9 +58,9 @@ export const LaunchCTASection: React.FC = () => {
         </div>
 
         {/* Quick-Start Terminal One-Liner */}
-        <div className="p-3.5 rounded-xl bg-black/80 border border-white/10 flex items-center justify-between gap-3 text-left">
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-300 overflow-x-auto">
-            <span className="text-amber-400 select-none">$</span>
+        <div className="p-3.5 rounded-xl bg-black/80 border border-white/10 flex items-center justify-between gap-3 text-left max-w-full">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-300 min-w-0 overflow-x-auto">
+            <span className="text-amber-400 select-none shrink-0">$</span>
             <span className="truncate">{cloneCmd}</span>
           </div>
           <button
