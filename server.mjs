@@ -64,9 +64,9 @@ export async function createServer() {
   });
 
   // 2. STATIC FILES SERVING
-  app.use(express.static(path.resolve(__dirname, "public"), { maxAge: "1d" }));
+  app.use(express.static(path.resolve(__dirname, "public"), { maxAge: "1d", redirect: false }));
   if (fs.existsSync(path.resolve(__dirname, "dist/client"))) {
-    app.use(express.static(path.resolve(__dirname, "dist/client"), { index: false, maxAge: "7d" }));
+    app.use(express.static(path.resolve(__dirname, "dist/client"), { index: false, maxAge: "7d", redirect: false }));
   }
 
   // 3. SERVER-SIDE RENDERING (SSR) HANDLER
