@@ -1,0 +1,32 @@
+# ==============================================================================
+# Render Blueprint Specification for Knotrun Landing Page
+# Docs: https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+services:
+  - type: web
+    name: knotrun-landing
+    runtime: static
+    buildCommand: npm install --include=dev && npm run build
+    staticPublishPath: ./dist/client
+    routes:
+      # Fast Edge 301 Redirects to Studio App
+      - type: redirect
+        source: /demo
+        destination: https://knotrun-studio.onrender.com/dashboard
+      - type: redirect
+        source: /app
+        destination: https://knotrun-studio.onrender.com/dashboard
+      - type: redirect
+        source: /studio
+        destination: https://knotrun-studio.onrender.com/dashboard
+      - type: redirect
+        source: /workspaces
+        destination: https://knotrun-studio.onrender.com/dashboard
+      - type: redirect
+        source: /privacy-policy
+        destination: /privacy
+      # SPA fallback routing
+      - type: rewrite
+        source: /*
+        destination: /index.html
