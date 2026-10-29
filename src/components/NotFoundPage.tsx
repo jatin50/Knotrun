@@ -59,7 +59,7 @@ export const NotFoundPage: React.FC = () => {
           </Link>
 
           <a
-            href="http://localhost:5173"
+            href="https://knotrun-studio.onrender.com/dashboard"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-slate-200 text-xs font-mono font-bold uppercase transition"
           >
             <Play className="w-4 h-4 text-emerald-400" />

@@ -1217,11 +1217,11 @@ export const HeroScene3D: React.FC = () => {
             {/* CTAs */}
             <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
               <a
-                href="http://localhost:5173"
+                href="https://knotrun-studio.onrender.com/dashboard"
                 className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-mono text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 shadow-[0_0_30px_rgba(255,153,0,0.4)] transition-all transform hover:scale-105 active:scale-95"
               >
                 <Play className="w-3.5 sm:w-4 h-3.5 sm:h-4 fill-current text-black" />
-                <span>LAUNCH STUDIO (PORT 5173)</span>
+                <span>LAUNCH STUDIO DEMO</span>
               </a>
 
               <a

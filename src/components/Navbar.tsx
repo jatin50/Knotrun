@@ -10,8 +10,8 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  appUrl = "http://localhost:5173",
-  githubUrl = "https://github.com/jatin50/n8n_workflow",
+  appUrl = "https://knotrun-studio.onrender.com/dashboard",
+  githubUrl = "https://github.com/jatin50/Knotrun_workflow",
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-5">
           <a
-            href="http://localhost:5173/login"
+            href="https://knotrun-studio.onrender.com/login"
             className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-mono text-amber-400 hover:text-amber-300 transition-colors"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
@@ -137,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>PRIVACY POLICY</span>
             </Link>
             <a
-              href="http://localhost:5173/login"
+              href="https://knotrun-studio.onrender.com/login"
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg text-amber-400 hover:bg-amber-500/10 transition-colors flex items-center justify-between"
             >

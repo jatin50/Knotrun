@@ -35,10 +35,10 @@ const REDIRECTS_301 = {
   "/index.html": "/",
   "/privacy-policy": "/privacy",
   "/privacy.html": "/privacy",
-  "/demo": "http://localhost:5173",
-  "/app": "http://localhost:5173",
-  "/studio": "http://localhost:5173",
-  "/workspaces": "http://localhost:5173/dashboard",
+  "/demo": "https://knotrun-studio.onrender.com/dashboard",
+  "/app": "https://knotrun-studio.onrender.com/dashboard",
+  "/studio": "https://knotrun-studio.onrender.com/dashboard",
+  "/workspaces": "https://knotrun-studio.onrender.com/dashboard",
 };
 
 export async function createServer() {

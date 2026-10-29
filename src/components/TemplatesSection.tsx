@@ -219,7 +219,7 @@ export const TemplatesSection: React.FC = () => {
                   SLA Passed • In-Memory
                 </span>
                 <a
-                  href="http://localhost:5173"
+                  href="https://knotrun-studio.onrender.com/dashboard"
                   className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-amber-400 hover:text-amber-300 transition-colors"
                 >
                   <span>Open in Studio</span>

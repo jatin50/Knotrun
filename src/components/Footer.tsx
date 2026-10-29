@@ -42,7 +42,7 @@ export const Footer: React.FC = () => {
             <span>Privacy</span>
           </Link>
           <a
-            href="https://github.com/jatin50/n8n_workflow"
+            href="https://github.com/jatin50/Knotrun_workflow"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-amber-400 transition-colors flex items-center gap-1"
@@ -51,7 +51,7 @@ export const Footer: React.FC = () => {
             <ArrowUpRight className="w-3 h-3" />
           </a>
           <a
-            href="http://localhost:5173"
+            href="https://knotrun-studio.onrender.com/dashboard"
             className="hover:text-amber-400 transition-colors flex items-center gap-1"
           >
             <span>Studio App</span>

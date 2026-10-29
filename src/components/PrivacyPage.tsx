@@ -157,7 +157,7 @@ export const PrivacyPage: React.FC = () => {
           </Link>
 
           <a
-            href="http://localhost:5173"
+            href="https://knotrun-studio.onrender.com/dashboard"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-xs font-mono font-bold uppercase transition"
           >
             <span>Launch Studio Demo</span>

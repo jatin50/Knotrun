@@ -39,15 +39,15 @@ export const LaunchCTASection: React.FC = () => {
       <div className="relative max-w-xl mx-auto p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(255,153,0,0.2)] backdrop-blur-2xl space-y-4 sm:space-y-6">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="http://localhost:5173"
+            href="https://knotrun-studio.onrender.com/dashboard"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl text-sm font-mono font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 shadow-[0_0_30px_rgba(255,153,0,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
-            <span>Launch Live Studio (Port 5173)</span>
+            <span>Launch Live Studio</span>
             <ArrowRight className="w-4 h-4 text-black" />
           </a>
 
           <a
-            href="https://github.com/jatin50/n8n_workflow"
+            href="https://github.com/jatin50/Knotrun_workflow"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-mono font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
