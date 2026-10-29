@@ -1176,8 +1176,8 @@ export const HeroScene3D: React.FC = () => {
   const isGunStage = scrollProgress >= 0.09 && scrollProgress < 0.26;
 
   return (
-    // EXTENDED RUNWAY HEIGHT (h-[850vh] gives generous, un-rushed slow-motion scroll depth)
-    <div ref={scrollContainerRef} className="relative w-full h-[850vh] bg-[#070A0F]">
+    // OPTIMIZED RUNWAY DEPTH (h-[480vh] provides buttery smooth 3D slow-motion without user scroll fatigue)
+    <div ref={scrollContainerRef} className="relative w-full h-[480vh] bg-[#070A0F]">
       {/* PINNED FULLSCREEN 3D VIEWPORT */}
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         {/* Three.js Canvas Container */}
@@ -1229,7 +1229,11 @@ export const HeroScene3D: React.FC = () => {
 
               <a
                 href="#engine-chip"
-                className="hidden sm:inline-flex items-center gap-2 px-7 py-4 rounded-full border border-white/20 hover:border-amber-400 bg-white/5 hover:bg-white/10 text-xs font-mono font-medium text-slate-300 hover:text-white transition-all"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("engine-chip")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="hidden sm:inline-flex items-center gap-2 px-7 py-4 rounded-full border border-white/20 hover:border-amber-400 bg-white/5 hover:bg-white/10 text-xs font-mono font-medium text-slate-300 hover:text-white transition-all cursor-pointer"
               >
                 <span>EXPLORE ARCHITECTURE</span>
                 <ArrowRight className="w-3.5 h-3.5 text-amber-400" />

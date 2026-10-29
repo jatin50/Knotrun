@@ -4,7 +4,7 @@ import { ArrowRight, Copy, Check, Terminal, ExternalLink } from "lucide-react";
 export const LaunchCTASection: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
-  const cloneCmd = "git clone https://github.com/jatin50/n8n_workflow.git && cd n8n_workflow && npm run setup && npm run dev";
+  const cloneCmd = "git clone https://github.com/jatin50/Knotrun_workflow.git && cd Knotrun_workflow && npm run setup && npm run dev";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(cloneCmd);

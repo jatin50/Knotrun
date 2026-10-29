@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-5">
           <a
-            href="https://knotrun-studio.onrender.com/login"
+            href="https://knotrun-studio.onrender.com/dashboard"
             className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-mono text-amber-400 hover:text-amber-300 transition-colors"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />

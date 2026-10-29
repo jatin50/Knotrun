@@ -73,8 +73,8 @@ export const EngineSection: React.FC = () => {
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                 <span className="text-xs font-mono font-bold text-cyan-300 tracking-wider">AETHEL-CORE // V8</span>
               </div>
-              <span className="text-[10px] font-mono text-slate-400 px-2 py-0.5 rounded bg-white/5 border border-white/10">
-                12nm FinFET
+              <span className="text-[10px] font-mono text-cyan-300 px-2 py-0.5 rounded bg-cyan-950/40 border border-cyan-500/30 font-semibold">
+                V8 Isolate Sandbox
               </span>
             </div>
 
