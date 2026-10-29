@@ -75,8 +75,17 @@ export const SEOHead: React.FC<SEOProps> = ({
   schemaType = "software"
 }) => {
   useEffect(() => {
-    // 1. Update Title
+    // 1. Update Title & Favicon in title bar
     document.title = title;
+
+    let fav = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+    if (!fav) {
+      fav = document.createElement("link");
+      fav.setAttribute("rel", "icon");
+      document.head.appendChild(fav);
+    }
+    fav.setAttribute("type", "image/svg+xml");
+    fav.setAttribute("href", "/favicon.svg");
 
     // Helper to set or create meta tag
     const setMeta = (nameAttr: "name" | "property", key: string, content: string) => {

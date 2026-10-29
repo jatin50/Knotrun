@@ -1,14 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Cpu, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, ShieldCheck } from "lucide-react";
+import { KnotrunLogo } from "./KnotrunLogo";
 
 export const Footer: React.FC = () => {
   return (
     <footer className="relative z-10 w-full border-t border-white/10 bg-[#070A0F] py-8 sm:py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
         <div className="flex items-center gap-2.5 sm:gap-3">
-          <Link to="/" className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 hover:scale-105 transition">
-            <Cpu className="w-4 h-4" />
+          <Link to="/" title="Knotrun Engine" className="shrink-0 hover:scale-105 transition">
+            <KnotrunLogo variant="icon" size="sm" />
           </Link>
           <Link to="/" className="text-sm font-bold text-white tracking-tight font-['Space_Grotesk'] hover:text-amber-300 transition">
             Knotrun Engine
