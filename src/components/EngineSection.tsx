@@ -166,6 +166,38 @@ export const EngineSection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* High-Resolution In-Memory DAG Topology Schematic (WebP + Lazy Loading + Alt Text) */}
+      <div className="pt-6">
+        <div className="p-4 sm:p-6 rounded-2xl bg-[#090D16]/80 border border-white/10 backdrop-blur-xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-4">
+            <div>
+              <h3 className="text-base font-bold text-white font-['Space_Grotesk']">
+                In-Memory Topological Conduit Flow
+              </h3>
+              <p className="text-xs font-mono text-slate-400">
+                Visualized end-to-end data packet traversal with zero disk I/O bottlenecks
+              </p>
+            </div>
+            <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider self-start sm:self-auto">
+              Sub-Millisecond Pipeline
+            </span>
+          </div>
+
+          <picture className="block w-full overflow-hidden rounded-xl">
+            <source type="image/webp" srcSet="/architecture-diagram.webp" />
+            <img
+              src="/architecture-diagram.png"
+              alt="Knotrun In-Memory DAG Execution Pipeline Architecture and Zero-Trust Network Conduit"
+              loading="lazy"
+              decoding="async"
+              width={800}
+              height={480}
+              className="w-full h-auto object-cover rounded-xl transition duration-300 hover:scale-[1.01]"
+            />
+          </picture>
+        </div>
+      </div>
     </section>
   );
 };

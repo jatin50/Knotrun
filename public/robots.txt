@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://knotrun.io/sitemap.xml

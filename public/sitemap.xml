@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://knotrun.io/</loc>
+    <lastmod>2026-10-29T16:35:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://knotrun.io/og-image.webp</image:loc>
+      <image:title>Knotrun High-Performance DAG Workflow Orchestration Engine</image:title>
+      <image:caption>81,000+ ops/sec in-memory Kahn's topological sort execution pipeline</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://knotrun.io/privacy</loc>
+    <lastmod>2026-10-29T16:35:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>

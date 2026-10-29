@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ArrowRight, Terminal, Menu, X, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Terminal, Menu, X, ExternalLink, ShieldCheck } from "lucide-react";
 import { GithubIcon } from "./GithubIcon";
 
 interface NavbarProps {
@@ -18,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="flex items-center justify-between px-4 sm:px-8 lg:px-14 py-3 sm:py-4">
         {/* Brand & Left Navigation Links */}
         <div className="flex items-center gap-6 sm:gap-10">
-          <a href="#pipeline-3d" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B20] group-hover:scale-125 transition-transform shadow-[0_0_10px_#ff3b20]" />
             <span className="font-extrabold text-sm tracking-wider text-white uppercase font-['Space_Grotesk']">
               Knotrun
@@ -26,21 +27,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
               // v2.0
             </span>
-          </a>
+          </Link>
 
           <nav className="hidden lg:flex items-center gap-8 text-[11px] font-mono tracking-widest text-slate-400 uppercase">
-            <a href="#pipeline-3d" className="hover:text-white transition-colors">
+            <a href="/#pipeline-3d" className="hover:text-white transition-colors">
               HOME
             </a>
-            <a href="#engine-chip" className="hover:text-white transition-colors">
+            <a href="/#engine-chip" className="hover:text-white transition-colors">
               V8 ENGINE
             </a>
-            <a href="#telemetry-hud" className="hover:text-white transition-colors">
+            <a href="/#telemetry-hud" className="hover:text-white transition-colors">
               TELEMETRY
             </a>
-            <a href="#templates" className="hover:text-white transition-colors">
+            <a href="/#templates" className="hover:text-white transition-colors">
               BLUEPRINTS
             </a>
+            <Link to="/privacy" className="hover:text-white transition-colors">
+              PRIVACY
+            </Link>
           </nav>
         </div>
 
@@ -91,33 +95,41 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="lg:hidden border-t border-white/10 bg-[#070A0F]/95 backdrop-blur-2xl px-5 py-4 space-y-3 animate-in slide-in-from-top-4 duration-150">
           <nav className="flex flex-col space-y-2 text-xs font-mono tracking-widest text-slate-300 uppercase">
             <a
-              href="#pipeline-3d"
+              href="/#pipeline-3d"
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
             >
               HOME // 3D RUNWAY
             </a>
             <a
-              href="#engine-chip"
+              href="/#engine-chip"
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
             >
               V8 ENGINE ARCHITECTURE
             </a>
             <a
-              href="#telemetry-hud"
+              href="/#telemetry-hud"
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
             >
               HARDWARE TELEMETRY
             </a>
             <a
-              href="#templates"
+              href="/#templates"
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
             >
               WORKFLOW BLUEPRINTS
             </a>
+            <Link
+              to="/privacy"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-3 rounded-lg hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2 text-emerald-400"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>PRIVACY POLICY</span>
+            </Link>
             <a
               href="http://localhost:5173/login"
               onClick={() => setMobileMenuOpen(false)}
