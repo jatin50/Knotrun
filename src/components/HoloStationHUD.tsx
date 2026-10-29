@@ -196,6 +196,32 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
     setGlarePos((prev) => ({ ...prev, opacity: 0 }));
   };
 
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotX = -((y - centerY) / centerY) * 10;
+      const rotY = ((x - centerX) / centerX) * 10;
+      setRotateX(rotX);
+      setRotateY(rotY);
+      setGlarePos({
+        x: (x / rect.width) * 100,
+        y: (y / rect.height) * 100,
+        opacity: 0.25,
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setRotateX(4);
+    setRotateY(-6);
+    setGlarePos((prev) => ({ ...prev, opacity: 0 }));
+  };
+
   const handleCopyPayload = () => {
     navigator.clipboard.writeText(JSON.stringify(station.payload, null, 2));
     setCopied(true);
@@ -252,17 +278,19 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
           transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${
-            isHovered ? 1.025 : 1
-          }, ${isHovered ? 1.025 : 1}, 1)`,
+            isHovered ? 1.02 : 1
+          }, ${isHovered ? 1.02 : 1}, 1)`,
           transformStyle: "preserve-3d",
           transition: isHovered
             ? "transform 0.08s ease-out"
             : "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
           willChange: "transform",
         }}
-        className="relative w-[460px] max-w-[calc(100vw-2.5rem)] rounded-2xl p-6 bg-[#080C14]/92 border border-white/25 shadow-[0_30px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden group"
+        className="relative w-full max-w-[450px] rounded-2xl p-4 sm:p-6 bg-[#080C14]/94 border border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden group"
       >
         {/* DYNAMIC SPECULAR LIGHT SHEEN FOLLOWER */}
         <div
@@ -306,12 +334,12 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
         {/* ============================================================ */}
         <div
           style={{ transform: "translateZ(25px)" }}
-          className="space-y-4 border-b border-white/10 pb-4 relative z-20"
+          className="space-y-3 sm:space-y-4 border-b border-white/10 pb-3 sm:pb-4 relative z-20"
         >
-          <div className="flex items-start justify-between gap-3 pt-2">
-            <div className="flex items-center gap-3">
+          <div className="flex items-start justify-between gap-2.5 pt-1 sm:pt-2">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div
-                className="p-2.5 rounded-xl border shadow-inner transition-transform duration-200 group-hover:scale-105"
+                className="p-2 sm:p-2.5 rounded-xl border shrink-0 transition-transform duration-200 group-hover:scale-105"
                 style={{
                   backgroundColor: `${station.color}15`,
                   borderColor: `${station.color}50`,
@@ -320,27 +348,27 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
               >
                 {getStationIcon(station.index)}
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400">
-                    STAGE {station.index} // DOCKING CONDUIT
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-400 truncate">
+                    STAGE {station.index} // CONDUIT
                   </span>
                   <span
-                    className="w-1.5 h-1.5 rounded-full animate-ping"
+                    className="w-1.5 h-1.5 rounded-full animate-ping shrink-0"
                     style={{ backgroundColor: station.color }}
                   />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-white tracking-wide font-['Space_Grotesk']">
+                <h3 className="text-sm sm:text-base font-bold text-white tracking-wide font-['Space_Grotesk'] truncate">
                   {station.name}
                 </h3>
               </div>
             </div>
 
             {/* LIVE METRIC PILL WITH 3D POP & OPTIONAL CLOSE */}
-            <div className="text-right flex flex-col items-end gap-1">
+            <div className="text-right flex flex-col items-end gap-1 shrink-0">
               <div className="flex items-center gap-1.5">
                 <span
-                  className="text-[10px] font-mono px-2.5 py-1 rounded-md font-bold tracking-wider inline-flex items-center gap-1.5 shadow-sm"
+                  className="text-[9px] sm:text-[10px] font-mono px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md font-bold tracking-wider inline-flex items-center gap-1 shadow-sm"
                   style={{
                     backgroundColor: `${station.color}20`,
                     color: station.color,
@@ -348,7 +376,7 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
                     boxShadow: `0 0 14px ${station.color}30`,
                   }}
                 >
-                  <Activity className="w-3 h-3" />
+                  <Activity className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                   <span>
                     {isOverclocked
                       ? `${(parseFloat(station.metric) * 1.8).toFixed(0)} ops/s [TURBO]`
@@ -368,7 +396,7 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
             </div>
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed font-normal">
+          <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed font-normal">
             {station.desc}
           </p>
         </div>
@@ -378,43 +406,43 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
         {/* ============================================================ */}
         <div
           style={{ transform: "translateZ(35px)" }}
-          className="flex items-center justify-between gap-2 py-3 border-b border-white/10 relative z-20 text-[11px] font-mono"
+          className="flex items-center justify-between gap-1.5 sm:gap-2 py-2.5 sm:py-3 border-b border-white/10 relative z-20 text-[10px] sm:text-[11px] font-mono"
         >
-          <div className="flex items-center gap-1.5 p-1 rounded-lg bg-black/40 border border-white/10">
+          <div className="flex items-center gap-1 sm:gap-1.5 p-0.5 sm:p-1 rounded-lg bg-black/40 border border-white/10 overflow-x-auto">
             <button
               onClick={() => setActiveTab("telemetry")}
-              className={`px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
                 activeTab === "telemetry"
                   ? "bg-white/15 text-white font-bold shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Cpu className="w-3.5 h-3.5" />
+              <Cpu className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
               <span>TELEMETRY</span>
             </button>
 
             <button
               onClick={() => setActiveTab("payload")}
-              className={`px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
                 activeTab === "payload"
                   ? "bg-white/15 text-white font-bold shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>HEX / JSON</span>
+              <Terminal className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+              <span>HEX/JSON</span>
             </button>
 
             <button
               onClick={() => setActiveTab("probe")}
-              className={`px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
                 activeTab === "probe"
                   ? "bg-white/15 text-white font-bold shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Crosshair className="w-3.5 h-3.5" />
-              <span>PROBE SENSOR</span>
+              <Crosshair className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+              <span>PROBE</span>
             </button>
           </div>
 
@@ -422,13 +450,13 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
           <button
             onClick={() => setIsOverclocked(!isOverclocked)}
             title="Toggle Turbo Frequency Overclock"
-            className={`p-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1 text-[10px] font-mono ${
+            className={`px-2 py-1 sm:p-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1 text-[9px] sm:text-[10px] font-mono shrink-0 ${
               isOverclocked
                 ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-[0_0_12px_rgba(255,153,0,0.3)]"
                 : "bg-white/5 text-slate-400 border-white/10 hover:border-white/20"
             }`}
           >
-            <Flame className={`w-3.5 h-3.5 ${isOverclocked ? "text-amber-400 animate-pulse" : ""}`} />
+            <Flame className={`w-3 sm:w-3.5 h-3 sm:h-3.5 ${isOverclocked ? "text-amber-400 animate-pulse" : ""}`} />
             <span>{isOverclocked ? "TURBO" : "NORM"}</span>
           </button>
         </div>
@@ -574,15 +602,15 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
         {/* ============================================================ */}
         <div
           style={{ transform: "translateZ(30px)" }}
-          className="pt-3 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400 relative z-20"
+          className="pt-2.5 sm:pt-3 border-t border-white/10 flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-slate-400 relative z-20"
         >
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-500">STATIONS:</span>
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <span className="text-slate-500 hidden sm:inline">STATIONS:</span>
             {[1, 2, 3, 4].map((idx) => (
               <button
                 key={idx}
                 onClick={() => onSelectStation && onSelectStation(idx)}
-                className={`w-6 h-6 rounded font-mono text-[10px] font-bold flex items-center justify-center transition-all cursor-pointer ${
+                className={`w-6 h-6 sm:w-7 sm:h-7 rounded font-mono text-[9px] sm:text-[10px] font-bold flex items-center justify-center transition-all cursor-pointer ${
                   stationIndex === idx
                     ? "bg-white text-black shadow-md scale-105"
                     : "bg-white/5 text-slate-400 hover:bg-white/15 hover:text-white"
@@ -593,10 +621,8 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400/90 flex items-center gap-1">
-              Scroll runway to navigate &rarr;
-            </span>
+          <div className="flex items-center gap-1 text-amber-400/90 text-[9px] sm:text-[10px]">
+            <span>Scroll runway &rarr;</span>
           </div>
         </div>
       </div>

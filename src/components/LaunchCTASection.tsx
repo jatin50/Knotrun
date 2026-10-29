@@ -13,7 +13,7 @@ export const LaunchCTASection: React.FC = () => {
   };
 
   return (
-    <section className="relative z-10 w-full max-w-5xl mx-auto px-6 py-28 text-center space-y-10">
+    <section className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-28 text-center space-y-8 sm:space-y-10">
       {/* Glow aura */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-cyan-500/15 blur-[140px] rounded-full pointer-events-none" />
 
@@ -36,7 +36,7 @@ export const LaunchCTASection: React.FC = () => {
       </div>
 
       {/* Main Action Portal Box */}
-      <div className="relative max-w-xl mx-auto p-8 rounded-3xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(255,153,0,0.2)] backdrop-blur-2xl space-y-6">
+      <div className="relative max-w-xl mx-auto p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(255,153,0,0.2)] backdrop-blur-2xl space-y-4 sm:space-y-6">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="http://localhost:5173"

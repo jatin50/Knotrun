@@ -48,6 +48,26 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
     setGlarePos((prev) => ({ ...prev, opacity: 0 }));
   };
 
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotX = -((y - centerY) / centerY) * 10;
+      const rotY = ((x - centerX) / centerX) * 10;
+      setRotateX(rotX);
+      setRotateY(rotY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setRotateX(3);
+    setRotateY(7);
+  };
+
   const handleDischargeBurst = () => {
     setIsDischarging(true);
     setTestCapacitorCharge(100);
@@ -80,17 +100,19 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
           transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${
-            isHovered ? 1.025 : 1
-          }, ${isHovered ? 1.025 : 1}, 1)`,
+            isHovered ? 1.02 : 1
+          }, ${isHovered ? 1.02 : 1}, 1)`,
           transformStyle: "preserve-3d",
           transition: isHovered
             ? "transform 0.08s ease-out"
             : "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
           willChange: "transform",
         }}
-        className="relative w-[480px] max-w-[calc(100vw-2.5rem)] rounded-2xl p-6 bg-[#080C14]/92 border border-white/25 shadow-[0_30px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(255,153,0,0.25)] backdrop-blur-2xl overflow-hidden group"
+        className="relative w-full max-w-[460px] rounded-2xl p-4 sm:p-6 bg-[#080C14]/92 border border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(255,153,0,0.25)] backdrop-blur-2xl overflow-hidden group"
       >
         {/* DYNAMIC SPECULAR LIGHT SHEEN */}
         <div
@@ -128,28 +150,28 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
         {/* ============================================================ */}
         <div
           style={{ transform: "translateZ(25px)" }}
-          className="space-y-3.5 border-b border-white/10 pb-4 relative z-20"
+          className="space-y-2.5 sm:space-y-3.5 border-b border-white/10 pb-3 sm:pb-4 relative z-20"
         >
-          <div className="flex items-center justify-between pt-2">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-400 font-bold">
-                  STAGE 01 // LUNAR TITANIUM GAUSS LAUNCHER
+          <div className="flex items-start sm:items-center justify-between gap-2 pt-1 sm:pt-2">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
+                <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] text-amber-400 font-bold truncate">
+                  STAGE 01 // PARTICLE ACCELERATOR
                 </span>
               </div>
-              <h2 className="text-lg sm:text-xl font-extrabold text-white font-['Space_Grotesk'] tracking-wide">
+              <h2 className="text-base sm:text-xl font-extrabold text-white font-['Space_Grotesk'] tracking-wide truncate">
                 Magnetic Particle Cannon
               </h2>
             </div>
 
-            <span className="text-[10px] font-mono px-2.5 py-1 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/50 shadow-[0_0_12px_rgba(255,153,0,0.3)]">
-              ARMED // 6-STAGE STATOR
+            <span className="text-[9px] sm:text-[10px] font-mono px-2 sm:px-2.5 py-0.5 sm:py-1 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/50 shadow-[0_0_12px_rgba(255,153,0,0.3)] shrink-0">
+              ARMED // 6-STAGE
             </span>
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed font-normal">
-            Aim the heavy dual-cheek turret assembly with your mouse cursor. Tilt this HUD card in 3D to inspect capacitor parameters, or discharge a test pulse.
+          <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed font-normal">
+            Aim the heavy dual-cheek turret assembly with your mouse cursor or drag on the HUD card in 3D to inspect capacitor parameters.
           </p>
         </div>
 
@@ -202,13 +224,13 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
         {/* ============================================================ */}
         <div
           style={{ transform: "translateZ(45px)" }}
-          className="pt-3 pb-2 flex items-center justify-between gap-3 relative z-20 text-xs font-mono"
+          className="pt-2.5 sm:pt-3 pb-1 flex flex-col xs:flex-row items-stretch sm:items-center justify-between gap-2 relative z-20 text-xs font-mono"
         >
           {/* TEST FIRE BUTTON */}
           <button
             onClick={handleDischargeBurst}
             disabled={isDischarging}
-            className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-[11px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,153,0,0.3)] active:scale-95 cursor-pointer disabled:opacity-60"
+            className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-[10px] sm:text-[11px] flex items-center justify-center gap-1.5 transition-all shadow-[0_0_20px_rgba(255,153,0,0.3)] active:scale-95 cursor-pointer disabled:opacity-60"
           >
             <Zap className={`w-3.5 h-3.5 ${isDischarging ? "animate-spin fill-black" : "fill-black"}`} />
             <span>
@@ -223,7 +245,7 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
           {/* GIMBAL / COAXIAL TOGGLE */}
           <button
             onClick={() => setIsGimbalMode(!isGimbalMode)}
-            className={`py-2 px-3 rounded-xl border transition-all text-[11px] flex items-center gap-1.5 cursor-pointer ${
+            className={`py-2 px-3 rounded-xl border transition-all text-[10px] sm:text-[11px] flex items-center justify-center gap-1.5 cursor-pointer shrink-0 ${
               isGimbalMode
                 ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-[0_0_12px_rgba(0,229,255,0.25)] font-bold"
                 : "bg-white/5 text-slate-300 border-white/10 hover:border-white/20"

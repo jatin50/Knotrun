@@ -51,9 +51,9 @@ export const TelemetrySection: React.FC = () => {
   };
 
   return (
-    <section id="telemetry-hud" className="relative z-10 w-full max-w-6xl mx-auto px-6 py-28 space-y-12">
+    <section id="telemetry-hud" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-28 space-y-8 sm:space-y-12">
       {/* SECTION HEADER: AEROSPACE FLIGHT DECK */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-[#1E293B] pb-8">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 sm:gap-6 border-b border-[#1E293B] pb-6 sm:pb-8">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
             <Gauge className="w-3.5 h-3.5 text-amber-400" />
@@ -71,7 +71,7 @@ export const TelemetrySection: React.FC = () => {
         <button
           onClick={runLiveBenchmark}
           disabled={isRunningBench}
-          className="group relative inline-flex items-center gap-3 px-7 py-3.5 rounded-xl font-mono text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-[0_0_30px_rgba(255,153,0,0.4)] border border-amber-200 transition-all transform active:scale-95 disabled:opacity-60 cursor-pointer"
+          className="group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl font-mono text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-[0_0_30px_rgba(255,153,0,0.4)] border border-amber-200 transition-all transform active:scale-95 disabled:opacity-60 cursor-pointer w-full sm:w-auto"
         >
           <Play className={`w-4 h-4 ${isRunningBench ? "animate-spin text-black" : "fill-current"}`} />
           <span className="tracking-wider uppercase">
@@ -81,7 +81,7 @@ export const TelemetrySection: React.FC = () => {
       </div>
 
       {/* 4 INDUSTRIAL COCKPIT INSTRUMENT CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* INSTRUMENT 1: DAG THROUGHPUT (CYBER GOLD #FF9900) */}
         <div className="p-6 rounded-2xl bg-[#090E17] border-2 border-amber-500/30 shadow-[0_15px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,153,0,0.2)] space-y-4 relative group">
           {/* Top bezel with hex bolts */}
@@ -243,25 +243,25 @@ export const TelemetrySection: React.FC = () => {
       </div>
 
       {/* CONTINUOUS INTEGRATION SLA REGRESSION GATE STATUS BOARD */}
-      <div className="p-6 rounded-2xl bg-[#0B111E] border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="p-4 sm:p-6 rounded-2xl bg-[#0B111E] border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shrink-0">
             <Cpu className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="text-[11px] sm:text-xs font-mono font-bold text-white uppercase tracking-wider">
                 AUTOMATED CI REGRESSION GATE // PASS ({passedRuns.toLocaleString()} RUNS)
               </span>
             </div>
-            <span className="text-[11px] font-mono text-slate-400">
+            <span className="text-[10px] sm:text-[11px] font-mono text-slate-400">
               Benchmarked on AMD EPYC 7763 • 128-bit SIMD Vector Engine
             </span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs font-mono">
           <span className="flex items-center gap-1.5 text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-3 py-1.5 rounded-lg shadow-[0_0_15px_rgba(0,255,136,0.1)]">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>Math: 1.45M ops/s</span>

@@ -131,7 +131,7 @@ export const TemplatesSection: React.FC = () => {
   );
 
   return (
-    <section id="templates" className="relative z-10 w-full max-w-6xl mx-auto px-6 py-28 space-y-12">
+    <section id="templates" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-28 space-y-8 sm:space-y-12">
       {/* SECTION HEADER */}
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
@@ -147,12 +147,12 @@ export const TemplatesSection: React.FC = () => {
       </div>
 
       {/* INDUSTRIAL CATEGORY FILTER TABS */}
-      <div className="flex flex-wrap items-center justify-center gap-2.5">
+      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCat(cat)}
-            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
               selectedCat === cat
                 ? "bg-amber-400 text-black shadow-[0_0_20px_rgba(255,153,0,0.4)] border border-amber-300"
                 : "bg-[#090D16] text-slate-400 hover:text-white border border-white/10 hover:border-white/20"
@@ -164,11 +164,11 @@ export const TemplatesSection: React.FC = () => {
       </div>
 
       {/* TEMPLATE CARDS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {filtered.map((item) => (
           <div
             key={item.id}
-            className="p-7 rounded-2xl bg-[#090E17] border border-white/10 hover:border-amber-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] backdrop-blur-xl space-y-5 transition-all group flex flex-col justify-between"
+            className="p-5 sm:p-7 rounded-2xl bg-[#090E17] border border-white/10 hover:border-amber-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] backdrop-blur-xl space-y-4 sm:space-y-5 transition-all group flex flex-col justify-between"
           >
             <div className="space-y-3">
               {/* Card Header Bar */}

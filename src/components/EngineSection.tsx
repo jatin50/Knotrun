@@ -16,7 +16,7 @@ export const EngineSection: React.FC = () => {
   };
 
   return (
-    <section id="engine-chip" className="relative z-10 w-full max-w-6xl mx-auto px-6 py-28 space-y-16">
+    <section id="engine-chip" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-28 space-y-10 sm:space-y-16">
       {/* Section Header */}
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-400">
@@ -50,7 +50,7 @@ export const EngineSection: React.FC = () => {
               transformStyle: "preserve-3d",
               transition: "transform 0.15s ease-out",
             }}
-            className="relative w-80 sm:w-96 h-80 sm:h-96 rounded-3xl bg-[#090D16] border-2 border-cyan-500/40 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(6,182,212,0.25)] flex flex-col justify-between"
+            className="relative w-[280px] xs:w-80 sm:w-96 h-[280px] xs:h-80 sm:h-96 max-w-full rounded-2xl sm:rounded-3xl bg-[#090D16] border-2 border-cyan-500/40 p-4 sm:p-6 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(6,182,212,0.25)] flex flex-col justify-between"
           >
             {/* Golden Edge Pins (Silicon Wafer Micro-Pins) */}
             <div className="absolute -top-2 left-6 right-6 flex justify-between pointer-events-none">
