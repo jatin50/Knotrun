@@ -42,7 +42,15 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-4 sm:gap-5">
+        <a
+          href="http://localhost:5173/login"
+          className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-mono text-amber-400 hover:text-amber-300 transition-colors"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+          <span>RECRUITER DEMO</span>
+        </a>
+
         <a
           href={githubUrl}
           target="_blank"
@@ -55,11 +63,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <a
           href={appUrl}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 hover:border-[#FF3B20] bg-white/5 hover:bg-[#FF3B20]/10 text-xs font-mono font-semibold text-white tracking-wider uppercase transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 hover:border-amber-400 bg-white/5 hover:bg-amber-400/10 text-xs font-mono font-semibold text-white tracking-wider uppercase transition-all transform hover:scale-[1.02] active:scale-[0.98]"
         >
-          <Terminal className="w-3.5 h-3.5 text-[#FF3B20]" />
+          <Terminal className="w-3.5 h-3.5 text-amber-400" />
           <span>LAUNCH STUDIO</span>
-          <ArrowRight className="w-3 h-3 text-[#FF3B20]" />
+          <ArrowRight className="w-3 h-3 text-amber-400" />
         </a>
       </div>
     </header>

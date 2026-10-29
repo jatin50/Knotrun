@@ -1,55 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Zap, ShieldCheck, Send, Radio, ChevronDown, Activity, Cpu, ArrowRight, Play } from "lucide-react";
-
-interface StationInfo {
-  index: string;
-  name: string;
-  subtitle: string;
-  metric: string;
-  desc: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
-const STATIONS: Record<number, StationInfo> = {
-  1: {
-    index: "01",
-    name: "INGESTION & SSRF GATEWAY",
-    subtitle: "Incoming Webhook & Schedule Intake",
-    metric: "0.001ms • Zero-Trust Filter",
-    desc: "Pre-flight cryptographic HMAC-SHA256 signature verification and DNS/IP firewall check to block private LAN and AWS metadata spoofing.",
-    icon: <ShieldCheck className="w-5 h-5 text-amber-400" />,
-    color: "#FF9900",
-  },
-  2: {
-    index: "02",
-    name: "V8 IN-MEMORY DAG REACTOR",
-    subtitle: "Kahn's Topological Dependency Sorter",
-    metric: "81,151 ops/s • 0.012ms Latency",
-    desc: "Resolves execution sequence in-memory in O(V+E) time without cloud database roundtrips. Sandboxes custom JavaScript in isolated V8 contexts.",
-    icon: <Zap className="w-5 h-5 text-cyan-400" />,
-    color: "#00E5FF",
-  },
-  3: {
-    index: "03",
-    name: "BULLMQ DISTRIBUTED QUEUE",
-    subtitle: "Upstash Redis TLS Message Buffer",
-    metric: "2,551 req/s • Zero Frame Drops",
-    desc: "Asynchronous task distributor buffering high-concurrency traffic bursts with resilient in-process async worker failover guarantees.",
-    icon: <Radio className="w-5 h-5 text-orange-400" />,
-    color: "#FF5500",
-  },
-  4: {
-    index: "04",
-    name: "MULTI-CHANNEL DISPATCH BAY",
-    subtitle: "Webhook Relay & DB Persistence",
-    metric: "200 OK • Neon DB Synchronized",
-    desc: "Simultaneous multi-target payload delivery to Discord webhooks, transactional email APIs, and serverless PostgreSQL storage.",
-    icon: <Send className="w-5 h-5 text-emerald-400" />,
-    color: "#00FF88",
-  },
-};
+import { ChevronDown, Activity, Cpu, ArrowRight, Play } from "lucide-react";
+import { HoloStationHUD } from "./HoloStationHUD";
+import { HoloGunHUD } from "./HoloGunHUD";
 
 export const HeroScene3D: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -98,17 +51,26 @@ export const HeroScene3D: React.FC = () => {
     scene.add(crimsonRimLight);
 
     // Station ambient fill lights
-    const amberLight = new THREE.PointLight(0xff9900, 3.5, 45);
+    const amberLight = new THREE.PointLight(0xff9900, 4.0, 45);
     amberLight.position.set(-5, 8, 8);
     scene.add(amberLight);
 
-    const cyanLight = new THREE.PointLight(0x00e5ff, 4, 40);
+    const cyanLight = new THREE.PointLight(0x00e5ff, 4.5, 40);
     cyanLight.position.set(12, 6, 6);
     scene.add(cyanLight);
 
-    const emeraldLight = new THREE.PointLight(0x00ff88, 3.5, 40);
+    const orangeLight = new THREE.PointLight(0xff5500, 4.5, 40);
+    orangeLight.position.set(24, 7, 7);
+    scene.add(orangeLight);
+
+    const emeraldLight = new THREE.PointLight(0x00ff88, 4.0, 40);
     emeraldLight.position.set(36, 6, 6);
     scene.add(emeraldLight);
+
+    // Frontal directional key light to make the lunar ceramic surfaces gleam with crisp specular highlights
+    const lunarSpecSun = new THREE.DirectionalLight(0xffffff, 2.0);
+    lunarSpecSun.position.set(5, 18, 22);
+    scene.add(lunarSpecSun);
 
     // Dynamic photon point light riding directly with the data packet
     const packetGlowLight = new THREE.PointLight(0xffaa00, 5, 8);
@@ -140,120 +102,323 @@ export const HeroScene3D: React.FC = () => {
     }
 
     // --- 1. HEAVY SCI-FI RAILGUN CANNON (POSITIONED AT X: -25) ---
+    // Redesigned in Frosted Arctic Ceramic & Brushed Lunar Titanium Mech Aerospace Aesthetic
     const cannonMountGroup = new THREE.Group();
     cannonMountGroup.position.set(-25, 0, 0);
 
-    const darkTitaniumMat = new THREE.MeshStandardMaterial({
-      color: 0x141c2b,
+    const gunCeramicMat = new THREE.MeshStandardMaterial({
+      color: 0xf8fafc, // High-gloss Arctic Ceramic White Armor
       metalness: 0.88,
-      roughness: 0.22,
+      roughness: 0.14,
     });
 
-    const crimsonAccentMat = new THREE.MeshStandardMaterial({
-      color: 0xff3311,
-      emissive: 0xff1a0a,
-      emissiveIntensity: 0.8,
-      metalness: 0.7,
+    const gunTitaniumMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0, // Brushed Lunar Titanium Plating & Rails
+      metalness: 0.94,
+      roughness: 0.18,
+    });
+
+    const gunCarbonMat = new THREE.MeshStandardMaterial({
+      color: 0x141a24, // Deep Carbon Composite Chassis & Recesses
+      metalness: 0.70,
+      roughness: 0.38,
+    });
+
+    const gunAccentMat = new THREE.MeshStandardMaterial({
+      color: 0xff3311, // High-visibility Safety Crimson Trim
+      emissive: 0xaa1100,
+      emissiveIntensity: 1.4,
+      metalness: 0.75,
       roughness: 0.2,
     });
 
-    // Base Pedestal
-    const basePylon = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.0, 4.0, 1.8, 6),
-      darkTitaniumMat
-    );
-    basePylon.position.y = -1.2;
-    cannonMountGroup.add(basePylon);
+    const gunCoilMat = new THREE.MeshStandardMaterial({
+      color: 0xffaa00, // Magnetic Stator Accelerator Coils
+      emissive: 0xff7700,
+      emissiveIntensity: 2.6,
+      metalness: 0.4,
+      roughness: 0.2,
+    });
 
-    // Hazard Trim Ring
+    // A. Ground Foundation Base (Octagonal Heavy Carbon Pedestal)
+    const basePedestal = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.6, 4.4, 1.4, 8),
+      gunCarbonMat
+    );
+    basePedestal.position.y = -1.3;
+    cannonMountGroup.add(basePedestal);
+
+    // B. Four White Ceramic Outrigger Stabilization Footpads
+    for (let o = 0; o < 4; o++) {
+      const padAngle = (o * Math.PI) / 2 + Math.PI / 4;
+      const footpad = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.55, 1.8),
+        gunCeramicMat
+      );
+      footpad.position.set(
+        Math.cos(padAngle) * 3.8,
+        -1.7,
+        Math.sin(padAngle) * 3.8
+      );
+      footpad.rotation.y = -padAngle;
+      cannonMountGroup.add(footpad);
+    }
+
+    // C. Octagonal Hazard Crimson Safety Trim
     const hazardRing = new THREE.Mesh(
-      new THREE.TorusGeometry(3.4, 0.15, 8, 6),
-      crimsonAccentMat
+      new THREE.TorusGeometry(3.9, 0.14, 8, 8),
+      gunAccentMat
     );
     hazardRing.rotateX(Math.PI / 2);
-    hazardRing.position.y = -1.2;
+    hazardRing.position.y = -1.3;
     cannonMountGroup.add(hazardRing);
 
-    // Yaw Turret
+    // D. Brushed Platinum Azimuth Turntable Ring
+    const turntableBearing = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.7, 2.9, 0.45, 32),
+      gunTitaniumMat
+    );
+    turntableBearing.position.y = -0.45;
+    cannonMountGroup.add(turntableBearing);
+
+    // E. Yaw Turret Swivel Assembly
     const yawTurret = new THREE.Group();
     yawTurret.position.y = 0;
-    const turntableGeo = new THREE.CylinderGeometry(2.4, 2.6, 0.8, 16);
-    const turntable = new THREE.Mesh(turntableGeo, darkTitaniumMat);
-    turntable.position.y = -0.2;
-    yawTurret.add(turntable);
 
-    // Side Armor Brackets
-    const bracketGeo = new THREE.BoxGeometry(0.75, 2.8, 2.4);
-    const leftBracket = new THREE.Mesh(bracketGeo, darkTitaniumMat);
-    leftBracket.position.set(-1.5, 1.1, 0);
-    const rightBracket = new THREE.Mesh(bracketGeo, darkTitaniumMat);
-    rightBracket.position.set(1.5, 1.1, 0);
-    yawTurret.add(leftBracket, rightBracket);
+    // Turret Swivel Deck
+    const turretDeck = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.4, 2.6, 0.65, 24),
+      gunCarbonMat
+    );
+    turretDeck.position.y = -0.15;
+    yawTurret.add(turretDeck);
 
-    // Movable Pitch Barrel Assembly
+    // Dual Reinforced White Ceramic Cheek Armor Sponsons
+    const createCheekSponson = (zOffset: number) => {
+      const cheekGroup = new THREE.Group();
+      cheekGroup.position.set(0, 1.1, zOffset);
+
+      // Main Outer White Ceramic Armor Sponson
+      const armorPlate = new THREE.Mesh(
+        new THREE.BoxGeometry(2.6, 3.2, 0.8),
+        gunCeramicMat
+      );
+      cheekGroup.add(armorPlate);
+
+      // Recessed Carbon Cooling Vents
+      const ventPlate = new THREE.Mesh(
+        new THREE.BoxGeometry(1.6, 1.8, 0.86),
+        gunCarbonMat
+      );
+      ventPlate.position.set(-0.2, 0.2, 0);
+      cheekGroup.add(ventPlate);
+
+      // Crimson Hazard Strip
+      const trim = new THREE.Mesh(
+        new THREE.BoxGeometry(2.4, 0.16, 0.84),
+        gunAccentMat
+      );
+      trim.position.set(0, -0.9, 0);
+      cheekGroup.add(trim);
+
+      // Heavy Brushed Titanium Trunnion Pivot Hub
+      const trunnionHub = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.85, 0.85, 0.35, 24),
+        gunTitaniumMat
+      );
+      trunnionHub.rotateX(Math.PI / 2);
+      trunnionHub.position.set(0, 0, zOffset > 0 ? 0.35 : -0.35);
+      cheekGroup.add(trunnionHub);
+
+      return cheekGroup;
+    };
+
+    const leftCheek = createCheekSponson(-1.7);
+    const rightCheek = createCheekSponson(1.7);
+    yawTurret.add(leftCheek, rightCheek);
+
+    // F. Movable Pitch Barrel Assembly (Pivots smoothly on pitch axis)
     const pitchAssembly = new THREE.Group();
     pitchAssembly.position.set(0, 1.1, 0);
 
-    // Twin Accelerator Rails
-    const railGeo = new THREE.BoxGeometry(6.6, 0.4, 0.55);
-    const topRail = new THREE.Mesh(railGeo, darkTitaniumMat);
-    topRail.position.set(3.3, 0.6, 0);
-    const btmRail = new THREE.Mesh(railGeo, darkTitaniumMat);
-    btmRail.position.set(3.3, -0.6, 0);
-    pitchAssembly.add(topRail, btmRail);
+    // 1. Heavy Receiver & Breech Core (X: -2.2 to 1.2)
+    const breechCore = new THREE.Mesh(
+      new THREE.BoxGeometry(3.4, 1.8, 1.8),
+      gunCarbonMat
+    );
+    breechCore.position.set(-0.5, 0, 0);
+    pitchAssembly.add(breechCore);
 
-    // Breech Core
-    const breechGeo = new THREE.CylinderGeometry(0.95, 1.2, 2.4, 16);
-    breechGeo.rotateZ(Math.PI / 2);
-    const breech = new THREE.Mesh(breechGeo, darkTitaniumMat);
-    breech.position.x = 0.5;
-    pitchAssembly.add(breech);
+    // White Ceramic Top Breech Cowling
+    const topCowling = new THREE.Mesh(
+      new THREE.BoxGeometry(2.9, 0.42, 2.1),
+      gunCeramicMat
+    );
+    topCowling.position.set(-0.6, 0.95, 0);
+    pitchAssembly.add(topCowling);
 
-    // Magnetic Accelerator Coils
-    const coilMat = new THREE.MeshStandardMaterial({
-      color: 0xff9900,
-      emissive: 0xff6600,
-      emissiveIntensity: 2.2,
-      metalness: 0.3,
-      roughness: 0.2,
+    // Twin High-Voltage Fusion Battery Cells (Flanking Breech)
+    const createBatteryCell = (zPos: number) => {
+      const battGroup = new THREE.Group();
+      battGroup.position.set(-0.5, 0.1, zPos);
+
+      const cellCasing = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.38, 0.38, 2.4, 16),
+        gunTitaniumMat
+      );
+      cellCasing.rotateZ(Math.PI / 2);
+      battGroup.add(cellCasing);
+
+      // Glowing Amber Plasma Core Window
+      const energyCore = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.39, 0.39, 1.5, 16),
+        new THREE.MeshBasicMaterial({ color: 0xffaa00 })
+      );
+      energyCore.rotateZ(Math.PI / 2);
+      battGroup.add(energyCore);
+
+      return battGroup;
+    };
+    pitchAssembly.add(createBatteryCell(-1.15), createBatteryCell(1.15));
+
+    // Rear Radiator Heat Sink Grill (Cooling Fins at Breech Rear)
+    for (let r = 0; r < 5; r++) {
+      const radiatorFin = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, 1.5, 1.6),
+        gunTitaniumMat
+      );
+      radiatorFin.position.set(-2.0 - r * 0.22, 0, 0);
+      pitchAssembly.add(radiatorFin);
+    }
+
+    // 2. Heavy Quad-Rail Magnetic Accelerator Assembly (X: 1.2 to 6.6)
+    // 4 Heavy Titanium Corner Guide Rails
+    const railPositions = [
+      { y: 0.65, z: -0.65 },
+      { y: 0.65, z: 0.65 },
+      { y: -0.65, z: -0.65 },
+      { y: -0.65, z: 0.65 },
+    ];
+    railPositions.forEach((pos) => {
+      const cornerRail = new THREE.Mesh(
+        new THREE.BoxGeometry(5.4, 0.28, 0.28),
+        gunTitaniumMat
+      );
+      cornerRail.position.set(3.9, pos.y, pos.z);
+      pitchAssembly.add(cornerRail);
     });
-    const coilGeo = new THREE.TorusGeometry(0.9, 0.12, 12, 24);
+
+    // White Ceramic Barrel Fairings (Top & Bottom Armor Shells)
+    const topBarrelArmor = new THREE.Mesh(
+      new THREE.BoxGeometry(4.4, 0.22, 1.3),
+      gunCeramicMat
+    );
+    topBarrelArmor.position.set(3.6, 0.82, 0);
+    const btmBarrelArmor = new THREE.Mesh(
+      new THREE.BoxGeometry(4.4, 0.22, 1.3),
+      gunCeramicMat
+    );
+    btmBarrelArmor.position.set(3.6, -0.82, 0);
+    pitchAssembly.add(topBarrelArmor, btmBarrelArmor);
+
+    // Glowing Central Plasma Accelerator Bore
+    const innerPlasmaBore = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.42, 0.42, 5.2, 16),
+      new THREE.MeshBasicMaterial({
+        color: 0xffaa00,
+        transparent: true,
+        opacity: 0.5,
+      })
+    );
+    innerPlasmaBore.rotateZ(Math.PI / 2);
+    innerPlasmaBore.position.set(3.8, 0, 0);
+    pitchAssembly.add(innerPlasmaBore);
+
+    // 3. Six Magnetic Stator Accelerator Coils
+    const coilGeo = new THREE.TorusGeometry(0.95, 0.14, 8, 24);
     coilGeo.rotateY(Math.PI / 2);
 
     const coilMeshes: THREE.Mesh[] = [];
-    for (let c = 0; c < 5; c++) {
-      const coil = new THREE.Mesh(coilGeo, coilMat);
-      coil.position.x = 1.7 + c * 1.0;
+    const coilXPositions = [1.6, 2.4, 3.2, 4.0, 4.8, 5.6];
+    coilXPositions.forEach((xPos) => {
+      const coil = new THREE.Mesh(coilGeo, gunCoilMat);
+      coil.position.x = xPos;
+
+      // Heavy Titanium Mounting Collar on each coil
+      const coilCollar = new THREE.Mesh(
+        new THREE.TorusGeometry(1.12, 0.08, 6, 8),
+        gunTitaniumMat
+      );
+      coilCollar.rotateY(Math.PI / 2);
+      coilCollar.position.x = xPos;
+      pitchAssembly.add(coilCollar);
+
       pitchAssembly.add(coil);
       coilMeshes.push(coil);
-    }
+    });
 
-    // Heavy Muzzle Emitter
-    const muzzleGeo = new THREE.CylinderGeometry(1.05, 0.8, 1.0, 16);
-    muzzleGeo.rotateZ(-Math.PI / 2);
-    const muzzle = new THREE.Mesh(
-      muzzleGeo,
+    // 4. Heavy Multi-Slotted Muzzle Brake & Emitter Head (X = 6.6)
+    // Outer Ceramic Muzzle Cowl
+    const muzzleCowl = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.2, 0.95, 1.1, 8),
+      gunCeramicMat
+    );
+    muzzleCowl.rotateZ(-Math.PI / 2);
+    muzzleCowl.position.x = 6.45;
+    pitchAssembly.add(muzzleCowl);
+
+    // Titanium Muzzle Crown
+    const muzzleCrown = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.05, 1.15, 0.35, 16),
+      gunTitaniumMat
+    );
+    muzzleCrown.rotateZ(-Math.PI / 2);
+    muzzleCrown.position.x = 7.0;
+    pitchAssembly.add(muzzleCrown);
+
+    // Blinding White Plasma Flash Aperture
+    const muzzleAperture = new THREE.Mesh(
+      new THREE.TorusGeometry(0.55, 0.1, 12, 24),
       new THREE.MeshStandardMaterial({
-        color: 0xffaa00,
-        emissive: 0xff8800,
-        emissiveIntensity: 2.8,
+        color: 0xffffff,
+        emissive: 0xffaa00,
+        emissiveIntensity: 3.5,
       })
     );
-    muzzle.position.x = 6.6;
-    pitchAssembly.add(muzzle);
+    muzzleAperture.rotateY(Math.PI / 2);
+    muzzleAperture.position.x = 7.05;
+    pitchAssembly.add(muzzleAperture);
 
-    // Targeting Laser Line
+    // Side Plasma Baffle Vents
+    const baffleLeft = new THREE.Mesh(
+      new THREE.BoxGeometry(0.35, 0.75, 0.25),
+      gunCarbonMat
+    );
+    baffleLeft.position.set(6.45, 0, -0.9);
+    const baffleRight = new THREE.Mesh(
+      new THREE.BoxGeometry(0.35, 0.75, 0.25),
+      gunCarbonMat
+    );
+    baffleRight.position.set(6.45, 0, 0.9);
+    pitchAssembly.add(baffleLeft, baffleRight);
+
+    // 5. Dual Precision Laser Targeting Guidance
     const laserMat = new THREE.LineBasicMaterial({
-      color: 0xff5500,
+      color: 0xff4400,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.85,
     });
-    const laserGeo = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(7.0, 0, 0),
-      new THREE.Vector3(14.0, 0, 0),
+    const laserGeo1 = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(7.1, 0.35, 0),
+      new THREE.Vector3(15.0, 0.1, 0),
     ]);
-    const targetingLaser = new THREE.Line(laserGeo, laserMat);
-    pitchAssembly.add(targetingLaser);
+    const laserGeo2 = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(7.1, -0.35, 0),
+      new THREE.Vector3(15.0, -0.1, 0),
+    ]);
+    const targetingLaser1 = new THREE.Line(laserGeo1, laserMat);
+    const targetingLaser2 = new THREE.Line(laserGeo2, laserMat);
+    pitchAssembly.add(targetingLaser1, targetingLaser2);
 
     yawTurret.add(pitchAssembly);
     cannonMountGroup.add(yawTurret);
@@ -309,16 +474,16 @@ export const HeroScene3D: React.FC = () => {
     const collarGeo = new THREE.TorusGeometry(0.85, 0.12, 12, 24);
     collarGeo.rotateY(Math.PI / 2);
     const collarMat = new THREE.MeshStandardMaterial({
-      color: 0x334155,
-      metalness: 0.92,
-      roughness: 0.25,
+      color: 0xe2e8f0, // Brushed Lunar Titanium
+      metalness: 0.94,
+      roughness: 0.18,
     });
 
     const pylonGeo = new THREE.CylinderGeometry(0.14, 0.18, 6.0, 8);
     const pylonMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
-      metalness: 0.8,
-      roughness: 0.4,
+      color: 0x334155,
+      metalness: 0.85,
+      roughness: 0.35,
     });
 
     for (let t = 0.04; t < 0.92; t += 0.06) {
@@ -339,117 +504,343 @@ export const HeroScene3D: React.FC = () => {
     }
     scene.add(collarsGroup);
 
+    // ============================================================
+    // OPTION 1: FROSTED CERAMIC & BRUSHED LUNAR TITANIUM
+    // High-albedo, razor-sharp contrast against #070A0F background
+    // ============================================================
+    const lunarCeramicMat = new THREE.MeshStandardMaterial({
+      color: 0xf8fafc, // High-gloss Arctic Ceramic White
+      metalness: 0.88,
+      roughness: 0.14,
+    });
+
+    const brushedPlatinumMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0, // Brushed Lunar Titanium / Platinum
+      metalness: 0.94,
+      roughness: 0.20,
+    });
+
+    const carbonRecessMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b, // Dark Carbon-Fiber Inset Ribs
+      metalness: 0.65,
+      roughness: 0.40,
+    });
+
+    const stationPylonMat = new THREE.MeshStandardMaterial({
+      color: 0x334155, // Heavy Structural Titanium
+      metalness: 0.90,
+      roughness: 0.28,
+    });
+
     // --- 3. THE 4 INDUSTRIAL DOCKING STATIONS ---
     const stationsGroup = new THREE.Group();
 
-    // STATION 1: INGESTION & SSRF GATEWAY (at -5.0, 0, 0)
+    // --- STATION 1: INGESTION & SSRF GATEWAY (at -5.0, 0, 0) ---
+    // Heavy Octagonal Airlock Bulkhead in High-Gloss Ceramic & Lunar Titanium
     const st1 = new THREE.Group();
     st1.position.set(-5.0, 0, 0);
+    st1.userData = { stationIndex: 1 };
 
-    const st1RingMat = new THREE.MeshStandardMaterial({
-      color: 0xff9900,
-      emissive: 0xff6600,
-      emissiveIntensity: 0.8,
-      metalness: 0.85,
-      roughness: 0.2,
-    });
-    const st1OuterFrame = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.35, 6, 6), st1RingMat);
+    // 1. Heavy Outer Octagonal Ceramic Bulkhead Frame (8-sided Torus)
+    const st1OuterFrame = new THREE.Mesh(
+      new THREE.TorusGeometry(3.1, 0.46, 8, 8),
+      lunarCeramicMat
+    );
+    st1.add(st1OuterFrame);
+
+    // 2. Recessed Carbon-Fiber Chamfer Collar
+    const st1CarbonCollar = new THREE.Mesh(
+      new THREE.TorusGeometry(2.45, 0.18, 6, 8),
+      carbonRecessMat
+    );
+    st1.add(st1CarbonCollar);
+
+    // 3. Four Radial Lunar Titanium Hydraulic Clamping Calipers
+    for (let i = 0; i < 4; i++) {
+      const angle = (i * Math.PI) / 2;
+      const caliper = new THREE.Mesh(
+        new THREE.BoxGeometry(0.38, 1.1, 0.5),
+        brushedPlatinumMat
+      );
+      caliper.position.set(Math.cos(angle) * 2.1, Math.sin(angle) * 2.1, 0);
+      caliper.rotation.z = angle + Math.PI / 2;
+      st1.add(caliper);
+    }
+
+    // 4. Rotating Amber Holographic Scanner Ring & Laser Teeth
     const st1InnerScanner = new THREE.Mesh(
-      new THREE.TorusGeometry(2.1, 0.15, 12, 32),
+      new THREE.TorusGeometry(1.95, 0.12, 12, 32),
       new THREE.MeshStandardMaterial({
         color: 0xffaa00,
-        emissive: 0xffaa00,
-        emissiveIntensity: 1.8,
+        emissive: 0xff8800,
+        emissiveIntensity: 2.6,
+        roughness: 0.2,
       })
     );
-    st1.add(st1OuterFrame, st1InnerScanner);
+    st1.add(st1InnerScanner);
+
+    // 8 Amber Sensor Emitter Studs around the rim
+    for (let s = 0; s < 8; s++) {
+      const a = (s * Math.PI) / 4;
+      const stud = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffbb00 })
+      );
+      stud.position.set(Math.cos(a) * 3.3, Math.sin(a) * 3.3, 0.25);
+      st1.add(stud);
+    }
+
+    // 5. Heavy Titanium Mounting Pylon to Floor
+    const st1BasePylon = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.45, 0.75, 4.5, 8),
+      stationPylonMat
+    );
+    st1BasePylon.position.set(0, -4.25, 0);
+    st1.add(st1BasePylon);
+
     stationsGroup.add(st1);
 
-    // STATION 2: V8 IN-MEMORY DAG REACTOR (at 12.0, 0.5, 0)
+    // --- STATION 2: V8 IN-MEMORY DAG REACTOR (at 12.0, 0.5, 0) ---
+    // Massive Multi-Tier Tokamak Vessel in High-Gloss Ceramic Armor & Cyan Plasma Rings
     const st2 = new THREE.Group();
     st2.position.set(12.0, 0.5, 0);
+    st2.userData = { stationIndex: 2 };
 
+    // 1. Central Tokamak Reactor Vessel in High-Gloss White Ceramic
     const st2Core = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.4, 2.4, 3.8, 16),
-      new THREE.MeshStandardMaterial({
-        color: 0x090f1a,
-        metalness: 0.95,
-        roughness: 0.15,
-      })
+      new THREE.CylinderGeometry(2.5, 2.5, 3.8, 32),
+      lunarCeramicMat
     );
+    st2.add(st2Core);
+
+    // 2. Cyan Plasma Viewport Band (Glowing Center Window)
+    const st2PlasmaBelt = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.52, 2.52, 1.1, 32),
+      new THREE.MeshBasicMaterial({ color: 0x00e5ff })
+    );
+    st2.add(st2PlasmaBelt);
+
+    // 3. Top and Bottom Brushed Titanium Compression Caps
+    const st2CapTop = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.7, 2.5, 0.45, 32),
+      brushedPlatinumMat
+    );
+    st2CapTop.position.y = 2.0;
+    const st2CapBtm = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.5, 2.7, 0.45, 32),
+      brushedPlatinumMat
+    );
+    st2CapBtm.position.y = -2.0;
+    st2.add(st2CapTop, st2CapBtm);
+
+    // 4. Eight Radial Lunar Ceramic Cooling Fins
+    for (let f = 0; f < 8; f++) {
+      const finAngle = (f * Math.PI) / 4;
+      const fin = new THREE.Mesh(
+        new THREE.BoxGeometry(0.18, 3.6, 0.7),
+        lunarCeramicMat
+      );
+      fin.position.set(Math.cos(finAngle) * 2.65, 0, Math.sin(finAngle) * 2.65);
+      fin.rotation.y = -finAngle;
+      st2.add(fin);
+    }
+
+    // 5. Dual Counter-Rotating Magnetic Confinement Rings
     const st2CyanRing1 = new THREE.Mesh(
-      new THREE.TorusGeometry(3.0, 0.22, 16, 32),
+      new THREE.TorusGeometry(3.35, 0.22, 16, 48),
       new THREE.MeshStandardMaterial({
         color: 0x00e5ff,
-        emissive: 0x00b4d8,
-        emissiveIntensity: 1.6,
+        emissive: 0x00e5ff,
+        emissiveIntensity: 2.2,
       })
     );
     st2CyanRing1.rotateX(Math.PI / 2);
 
     const st2CyanRing2 = new THREE.Mesh(
-      new THREE.TorusGeometry(3.4, 0.15, 16, 32),
+      new THREE.TorusGeometry(3.85, 0.16, 16, 48),
       new THREE.MeshStandardMaterial({
         color: 0x00e5ff,
-        emissive: 0x00e5ff,
-        emissiveIntensity: 1.2,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 1.9,
       })
     );
     st2CyanRing2.rotateZ(Math.PI / 3);
+    st2.add(st2CyanRing1, st2CyanRing2);
 
-    st2.add(st2Core, st2CyanRing1, st2CyanRing2);
+    // 6. Heavy 4-Legged Titanium Base Cradle
+    for (let l = 0; l < 4; l++) {
+      const legAngle = (l * Math.PI) / 2 + Math.PI / 4;
+      const leg = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.25, 0.35, 5.2, 8),
+        stationPylonMat
+      );
+      leg.position.set(Math.cos(legAngle) * 2.4, -4.0, Math.sin(legAngle) * 2.4);
+      st2.add(leg);
+    }
+
     stationsGroup.add(st2);
 
-    // STATION 3: BULLMQ DISTRIBUTED QUEUE BUFFER (at 24.0, 0, 0)
+    // --- STATION 3: BULLMQ DISTRIBUTED QUEUE BUFFER (at 24.0, 0, 0) ---
+    // Twin Cryogenic Buffer Silos in Lunar Ceramic with Safety Hazard Orange Accents
     const st3 = new THREE.Group();
     st3.position.set(24.0, 0, 0);
+    st3.userData = { stationIndex: 3 };
 
-    const st3SiloMat = new THREE.MeshStandardMaterial({
-      color: 0x1b2434,
-      metalness: 0.88,
-      roughness: 0.3,
-    });
-    const siloLeft = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 4.6, 16), st3SiloMat);
-    siloLeft.position.z = -2.2;
-    const siloRight = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 4.6, 16), st3SiloMat);
-    siloRight.position.z = 2.2;
+    const createSilo = (zPos: number) => {
+      const siloGroup = new THREE.Group();
+      siloGroup.position.z = zPos;
 
+      // High-Gloss Lunar Ceramic Silo Body
+      const siloBody = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.45, 1.45, 5.2, 28),
+        lunarCeramicMat
+      );
+      siloGroup.add(siloBody);
+
+      // Domed Titanium Caps
+      const domeGeo = new THREE.SphereGeometry(1.45, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+      const topDome = new THREE.Mesh(domeGeo, brushedPlatinumMat);
+      topDome.position.y = 2.6;
+      const btmDome = new THREE.Mesh(domeGeo, brushedPlatinumMat);
+      btmDome.position.y = -2.6;
+      btmDome.rotation.x = Math.PI;
+      siloGroup.add(topDome, btmDome);
+
+      // Safety Orange Industrial Hazard Rings
+      const hazardCollarGeo = new THREE.TorusGeometry(1.5, 0.12, 12, 28);
+      hazardCollarGeo.rotateX(Math.PI / 2);
+      const hazardCollarMat = new THREE.MeshStandardMaterial({
+        color: 0xff5500,
+        emissive: 0xff3300,
+        emissiveIntensity: 2.0,
+      });
+      const topCollar = new THREE.Mesh(hazardCollarGeo, hazardCollarMat);
+      topCollar.position.y = 1.6;
+      const btmCollar = new THREE.Mesh(hazardCollarGeo, hazardCollarMat);
+      btmCollar.position.y = -1.6;
+      siloGroup.add(topCollar, btmCollar);
+
+      // Vertical Glowing Sight-Glass (Queue Fill-Level Telemetry)
+      const sightGlass = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, 3.8, 0.22),
+        new THREE.MeshBasicMaterial({ color: 0xff7700 })
+      );
+      sightGlass.position.set(1.4, 0, 0);
+      siloGroup.add(sightGlass);
+
+      return siloGroup;
+    };
+
+    const siloLeft = createSilo(-2.4);
+    const siloRight = createSilo(2.4);
+    st3.add(siloLeft, siloRight);
+
+    // Overhead Titanium Connecting Bridge Manifold
+    const bridgeTruss = new THREE.Mesh(
+      new THREE.BoxGeometry(1.1, 0.65, 4.9),
+      brushedPlatinumMat
+    );
+    bridgeTruss.position.y = 2.4;
+    st3.add(bridgeTruss);
+
+    // Central Rotating Safety Orange Induction Throttle Ring
     const st3HazardRing = new THREE.Mesh(
-      new THREE.TorusGeometry(2.7, 0.2, 16, 32),
+      new THREE.TorusGeometry(2.8, 0.22, 16, 32),
       new THREE.MeshStandardMaterial({
         color: 0xff5500,
         emissive: 0xff3300,
-        emissiveIntensity: 1.4,
+        emissiveIntensity: 2.2,
       })
     );
     st3HazardRing.rotateX(Math.PI / 2);
+    st3.add(st3HazardRing);
 
-    st3.add(siloLeft, siloRight, st3HazardRing);
+    // Base Support Foundation
+    const st3BasePlatform = new THREE.Mesh(
+      new THREE.BoxGeometry(3.6, 0.6, 7.0),
+      carbonRecessMat
+    );
+    st3BasePlatform.position.y = -3.8;
+    const st3PylonL = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 3.2, 8), stationPylonMat);
+    st3PylonL.position.set(0, -5.2, -2.4);
+    const st3PylonR = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 3.2, 8), stationPylonMat);
+    st3PylonR.position.set(0, -5.2, 2.4);
+    st3.add(st3BasePlatform, st3PylonL, st3PylonR);
+
     stationsGroup.add(st3);
 
-    // STATION 4: MULTI-CHANNEL DISPATCH BAY (at 36.0, 0.5, 0)
+    // --- STATION 4: MULTI-CHANNEL DISPATCH BAY (at 36.0, 0.5, 0) ---
+    // Faceted Lunar Ceramic Octahedral Core & 4 Titanium Multi-Target Emitter Horns
     const st4 = new THREE.Group();
     st4.position.set(36.0, 0.5, 0);
+    st4.userData = { stationIndex: 4 };
 
+    // 1. Faceted Lunar Ceramic Octahedron Core
     const st4Hub = new THREE.Mesh(
-      new THREE.OctahedronGeometry(2.4, 1),
-      new THREE.MeshStandardMaterial({
-        color: 0x061118,
-        metalness: 0.9,
-        roughness: 0.2,
-      })
+      new THREE.OctahedronGeometry(2.6, 1),
+      lunarCeramicMat
     );
+    st4.add(st4Hub);
+
+    // 2. Inner Carbon-Fiber Energy Core
+    const st4InnerCore = new THREE.Mesh(
+      new THREE.OctahedronGeometry(2.1, 0),
+      carbonRecessMat
+    );
+    st4.add(st4InnerCore);
+
+    // 3. Four Divergent Brushed Titanium Emitter Horns (Discord, Neon DB, Webhook, Email)
+    const emitterAngles = [
+      Math.PI / 4,
+      (3 * Math.PI) / 4,
+      (5 * Math.PI) / 4,
+      (7 * Math.PI) / 4,
+    ];
+    emitterAngles.forEach((ang) => {
+      const emitterGroup = new THREE.Group();
+      emitterGroup.position.set(Math.cos(ang) * 2.2, Math.sin(ang) * 2.2, 0);
+      emitterGroup.rotation.z = ang - Math.PI / 2;
+
+      // Titanium Horn
+      const horn = new THREE.Mesh(
+        new THREE.ConeGeometry(0.55, 1.8, 16),
+        brushedPlatinumMat
+      );
+      horn.rotation.x = Math.PI;
+      emitterGroup.add(horn);
+
+      // Acid Emerald Tip Emitter Ring
+      const tipRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.52, 0.08, 8, 16),
+        new THREE.MeshBasicMaterial({ color: 0x00ff88 })
+      );
+      tipRing.position.y = -0.9;
+      tipRing.rotateX(Math.PI / 2);
+      emitterGroup.add(tipRing);
+
+      st4.add(emitterGroup);
+    });
+
+    // 4. Orbiting Acid Emerald Induction Ring
     const st4EmitterRing = new THREE.Mesh(
-      new THREE.TorusGeometry(3.1, 0.25, 16, 32),
+      new THREE.TorusGeometry(3.4, 0.24, 16, 48),
       new THREE.MeshStandardMaterial({
         color: 0x00ff88,
         emissive: 0x00cc66,
-        emissiveIntensity: 1.8,
+        emissiveIntensity: 2.4,
       })
     );
     st4EmitterRing.rotateY(Math.PI / 2);
+    st4.add(st4EmitterRing);
 
-    st4.add(st4Hub, st4EmitterRing);
+    // 5. Heavy Titanium Vertical Mounting Pylon
+    const st4Pylon = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.8, 6.5, 8),
+      stationPylonMat
+    );
+    st4Pylon.position.set(0, -4.8, 0);
+    st4.add(st4Pylon);
+
     stationsGroup.add(st4);
 
     scene.add(stationsGroup);
@@ -523,16 +914,63 @@ export const HeroScene3D: React.FC = () => {
 
     // --- SMOOTH MOUSE TRACKING FOR CANNON AIMING (REDUCED SENSITIVITY) ---
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    const raycaster = new THREE.Raycaster();
+    const mouseVec = new THREE.Vector2();
+
     const handleMouseMove = (e: MouseEvent) => {
       // Reduced sensitivity by 55% for smooth, controlled hydraulic turret aiming
       mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
       mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 2;
+
+      mouseVec.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseVec, camera);
+      const intersects = raycaster.intersectObjects([st1, st2, st3, st4], true);
+      if (intersects.length > 0) {
+        renderer.domElement.style.cursor = "pointer";
+      } else {
+        renderer.domElement.style.cursor = "crosshair";
+      }
     };
     window.addEventListener("mousemove", handleMouseMove);
+
+    const handleCanvasClick = (event: MouseEvent) => {
+      mouseVec.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseVec.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseVec, camera);
+
+      const intersects = raycaster.intersectObjects([st1, st2, st3, st4], true);
+      if (intersects.length > 0) {
+        let obj: THREE.Object3D | null = intersects[0].object;
+        while (obj && !obj.userData?.stationIndex) {
+          obj = obj.parent;
+        }
+        if (obj && obj.userData?.stationIndex) {
+          const idx = obj.userData.stationIndex as number;
+          setActiveStation(idx);
+          if (scrollContainerRef.current) {
+            const stationRatios: Record<number, number> = {
+              1: 0.38,
+              2: 0.55,
+              3: 0.72,
+              4: 0.88,
+            };
+            const ratio = stationRatios[idx] || 0.38;
+            const totalScroll =
+              scrollContainerRef.current.offsetHeight - window.innerHeight;
+            const targetY =
+              scrollContainerRef.current.offsetTop + totalScroll * ratio;
+            window.scrollTo({ top: targetY, behavior: "smooth" });
+          }
+        }
+      }
+    };
+    renderer.domElement.addEventListener("click", handleCanvasClick);
 
     // --- SCROLL DRIVER & ANIMATION LOOP (CALIBRATED FOR GENTLE, SLOW-MOTION FLIGHT) ---
     let currentT = 0;
     let targetT = 0;
+    let scrollRatio = 0;
     const clock = new THREE.Clock();
     let animId: number;
 
@@ -541,6 +979,7 @@ export const HeroScene3D: React.FC = () => {
       const totalScroll = scrollContainer.scrollHeight - window.innerHeight;
       if (totalScroll <= 0) return;
       const progress = Math.min(Math.max(-containerRect.top / totalScroll, 0), 1);
+      scrollRatio = progress;
       setScrollProgress(progress);
 
       // EXTENDED CALIBRATED STAGES (Generous scroll runway so nothing moves too fast):
@@ -578,19 +1017,22 @@ export const HeroScene3D: React.FC = () => {
       yawTurret.rotation.y = mouse.x * 0.20; // Reduced angle range
       pitchAssembly.rotation.z = mouse.y * 0.15;
 
-      // Gentle coil pulsation
+      // Dynamic electromagnetic coil charge wave (charges up as user scrolls through Slide 2)
+      const chargeLevel = Math.min(Math.max((scrollRatio - 0.08) / 0.14, 0), 1);
       coilMeshes.forEach((mesh, i) => {
-        mesh.scale.setScalar(1 + Math.sin(time * 5 + i * 1.2) * 0.08);
+        mesh.scale.setScalar(1 + Math.sin(time * 7 + i * 0.85) * (0.06 + chargeLevel * 0.08));
       });
 
       // Docking Station Dynamics
-      st1OuterFrame.rotation.z = time * 0.3;
-      st1InnerScanner.rotation.z = -time * 0.6;
-      st2CyanRing1.rotation.z = time * -0.5;
-      st2CyanRing2.rotation.y = time * 0.45;
-      st3HazardRing.rotation.z = time * 0.4;
-      st4Hub.rotation.y = time * 0.4;
-      st4EmitterRing.rotation.x = time * 0.6;
+      st1OuterFrame.rotation.z = time * 0.25;
+      st1InnerScanner.rotation.z = -time * 0.55;
+      st2CyanRing1.rotation.z = time * -0.45;
+      st2CyanRing2.rotation.y = time * 0.40;
+      st3HazardRing.rotation.z = time * 0.35;
+      st4Hub.rotation.y = time * 0.35;
+      st4Hub.rotation.x = Math.sin(time * 0.6) * 0.12;
+      st4EmitterRing.rotation.x = time * 0.55;
+      st4EmitterRing.rotation.y = time * 0.25;
 
       // Gentle, weighted slow-motion scroll interpolation (damping factor 0.038)
       currentT += (targetT - currentT) * 0.038;
@@ -665,6 +1107,7 @@ export const HeroScene3D: React.FC = () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
+      renderer.domElement.removeEventListener("click", handleCanvasClick);
       cancelAnimationFrame(animId);
       renderer.dispose();
       if (renderer.domElement.parentNode) {
@@ -672,8 +1115,6 @@ export const HeroScene3D: React.FC = () => {
       }
     };
   }, []);
-
-  const station = activeStation ? STATIONS[activeStation] : null;
 
   // Slide 2 (Gun Stage) indicator active state (extended comfortable window)
   const isGunStage = scrollProgress >= 0.10 && scrollProgress < 0.28;
@@ -773,27 +1214,8 @@ export const HeroScene3D: React.FC = () => {
         {/* SLIDE 2: THE 3D LAUNCHER TURRET STAGE (SCROLL 10-28%) */}
         {/* ============================================================ */}
         {isGunStage && (
-          <div className="absolute top-28 left-8 sm:left-14 z-20 max-w-lg space-y-4 animate-in fade-in duration-300 pointer-events-none">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-mono font-bold text-amber-400 shadow-[0_0_20px_rgba(255,153,0,0.2)]">
-              <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-              <span>STAGE 01 // PARTICLE ACCELERATOR TURRET</span>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#090D16]/90 border border-white/15 backdrop-blur-xl space-y-3 shadow-2xl">
-              <h2 className="text-xl sm:text-2xl font-bold text-white font-['Space_Grotesk']">
-                Magnetic Particle Cannon
-              </h2>
-              <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                Aim the launcher turret gently with your mouse. Continue scrolling down to charge the magnetic stator coils and fire the payload directly from the gun muzzle into the conduit.
-              </p>
-              <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-amber-400">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                  Turret Armed at Muzzle
-                </span>
-                <span>Scroll to accelerate payload &rarr;</span>
-              </div>
-            </div>
+          <div className="absolute top-28 left-6 sm:left-14 z-30 animate-in fade-in zoom-in-95 duration-200">
+            <HoloGunHUD scrollProgress={scrollProgress} />
           </div>
         )}
 
@@ -825,47 +1247,28 @@ export const HeroScene3D: React.FC = () => {
         {/* ============================================================ */}
         {/* DYNAMIC STATION ARCHITECTURE HUD CARD (Slides in at each station) */}
         {/* ============================================================ */}
-        {station && (
-          <div className="absolute bottom-10 left-6 sm:left-14 z-30 max-w-md w-full p-6 rounded-2xl bg-[#090D16]/95 border-2 border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(255,153,0,0.2)] backdrop-blur-2xl animate-in slide-in-from-bottom-6 duration-200 space-y-3 pointer-events-auto">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
-                  {station.icon}
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
-                    STATION {station.index} // ARCHITECTURE
-                  </span>
-                  <h3 className="text-sm sm:text-base font-bold text-white tracking-wide font-['Space_Grotesk']">
-                    {station.name}
-                  </h3>
-                </div>
-              </div>
-              <span
-                className="text-[10px] font-mono px-2.5 py-1 rounded font-bold"
-                style={{
-                  backgroundColor: `${station.color}20`,
-                  color: station.color,
-                  border: `1px solid ${station.color}50`,
-                }}
-              >
-                {station.metric}
-              </span>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed font-normal">
-              {station.desc}
-            </p>
-
-            <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                Pipeline Stream: Active
-              </span>
-              <span className="text-amber-400 flex items-center gap-1">
-                Scroll to advance &rarr;
-              </span>
-            </div>
+        {activeStation && (
+          <div className="absolute bottom-10 left-6 sm:left-14 z-30 animate-in slide-in-from-bottom-8 duration-200">
+            <HoloStationHUD
+              stationIndex={activeStation}
+              onSelectStation={(idx) => {
+                setActiveStation(idx);
+                if (scrollContainerRef.current) {
+                  const stationRatios: Record<number, number> = {
+                    1: 0.38,
+                    2: 0.55,
+                    3: 0.72,
+                    4: 0.88,
+                  };
+                  const ratio = stationRatios[idx] || 0.38;
+                  const totalScroll =
+                    scrollContainerRef.current.offsetHeight - window.innerHeight;
+                  const targetY =
+                    scrollContainerRef.current.offsetTop + totalScroll * ratio;
+                  window.scrollTo({ top: targetY, behavior: "smooth" });
+                }
+              }}
+            />
           </div>
         )}
 
