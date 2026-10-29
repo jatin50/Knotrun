@@ -131,17 +131,17 @@ export const TemplatesSection: React.FC = () => {
   );
 
   return (
-    <section id="templates" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-28 space-y-8 sm:space-y-12">
+    <section id="templates" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-28 space-y-6 sm:space-y-12 overflow-hidden">
       {/* SECTION HEADER */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
+      <div className="text-center space-y-2.5 sm:space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
           <Layers className="w-3.5 h-3.5 text-amber-400" />
           <span>ENTERPRISE BLUEPRINTS // 10 VERIFIED WORKFLOWS</span>
         </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
+        <h2 className="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
           Production-Tested Architecture Blueprints
         </h2>
-        <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
+        <p className="text-xs sm:text-base text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
           Pre-engineered DAG workflow structures battle-tested against high concurrency, failover retries, and cryptographic security standards.
         </p>
       </div>
@@ -152,7 +152,7 @@ export const TemplatesSection: React.FC = () => {
           <button
             key={cat}
             onClick={() => setSelectedCat(cat)}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
               selectedCat === cat
                 ? "bg-amber-400 text-black shadow-[0_0_20px_rgba(255,153,0,0.4)] border border-amber-300"
                 : "bg-[#090D16] text-slate-400 hover:text-white border border-white/10 hover:border-white/20"
@@ -164,49 +164,49 @@ export const TemplatesSection: React.FC = () => {
       </div>
 
       {/* TEMPLATE CARDS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-6">
         {filtered.map((item) => (
           <div
             key={item.id}
-            className="p-5 sm:p-7 rounded-2xl bg-[#090E17] border border-white/10 hover:border-amber-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] backdrop-blur-xl space-y-4 sm:space-y-5 transition-all group flex flex-col justify-between"
+            className="p-4 sm:p-7 rounded-xl sm:rounded-2xl bg-[#090E17] border border-white/10 hover:border-amber-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] backdrop-blur-xl space-y-3.5 sm:space-y-5 transition-all group flex flex-col justify-between"
           >
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               {/* Card Header Bar */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-white/5 border border-white/10 shrink-0">
                     {item.categoryIcon}
                   </div>
                   <span
-                    className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded border uppercase ${item.badgeColor}`}
+                    className={`text-[9px] sm:text-[10px] font-mono font-bold px-2 sm:px-2.5 py-0.5 rounded border uppercase truncate ${item.badgeColor}`}
                   >
                     {item.category}
                   </span>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400 bg-white/5 border border-white/5 px-2 py-0.5 rounded">
+                <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 bg-white/5 border border-white/5 px-2 py-0.5 rounded shrink-0">
                   {item.estimatedOps}
                 </span>
               </div>
 
               {/* Title & Description */}
-              <h3 className="text-lg font-bold text-white group-hover:text-amber-300 transition-colors font-['Space_Grotesk']">
+              <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-amber-300 transition-colors font-['Space_Grotesk'] leading-snug">
                 {item.title}
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-normal">
+              <p className="text-xs text-slate-400 leading-relaxed font-normal line-clamp-3 sm:line-clamp-none">
                 {item.description}
               </p>
             </div>
 
             {/* Bottom Section: Node Stack & Launch CTA */}
-            <div className="pt-4 border-t border-white/10 space-y-4">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] font-mono uppercase text-slate-500 mr-1">
+            <div className="pt-3 sm:pt-4 border-t border-white/10 space-y-3 sm:space-y-4">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                <span className="text-[9px] sm:text-[10px] font-mono uppercase text-slate-500 mr-1">
                   NODES:
                 </span>
                 {item.nodeTypes.map((node, idx) => (
                   <span
                     key={idx}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10"
+                    className="text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10"
                   >
                     {node}
                   </span>

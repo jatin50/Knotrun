@@ -5,8 +5,8 @@ import { KnotrunLogo } from "./KnotrunLogo";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="relative z-10 w-full border-t border-white/10 bg-[#070A0F] py-8 sm:py-12 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+    <footer className="relative z-10 w-full border-t border-white/10 bg-[#070A0F] py-6 sm:py-12 px-4 sm:px-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 text-center md:text-left">
         <div className="flex items-center gap-2.5 sm:gap-3">
           <Link to="/" title="Knotrun Engine" className="shrink-0 hover:scale-105 transition">
             <KnotrunLogo variant="icon" size="sm" />
@@ -18,16 +18,16 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Live Infrastructure Status Indicators */}
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-[11px] sm:text-xs font-mono text-slate-400">
-          <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/5">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-3 text-[10px] sm:text-xs font-mono text-slate-400">
+          <span className="flex items-center gap-1.5 bg-white/5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded border border-white/5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             V8 Engine: 81k ops/s
           </span>
-          <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/5">
+          <span className="flex items-center gap-1.5 bg-white/5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded border border-white/5">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
             BullMQ TLS: 0 Drops
           </span>
-          <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/5">
+          <span className="flex items-center gap-1.5 bg-white/5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded border border-white/5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
             PostgreSQL: Connected
           </span>

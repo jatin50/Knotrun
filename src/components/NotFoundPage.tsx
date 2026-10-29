@@ -8,7 +8,7 @@ import { Footer } from "./Footer";
 
 export const NotFoundPage: React.FC = () => {
   return (
-    <div className="relative min-h-screen bg-[#070A0F] text-slate-100 font-['Space_Grotesk'] selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="relative min-h-screen bg-[#070A0F] text-slate-100 font-['Space_Grotesk'] selection:bg-amber-500/30 selection:text-amber-200 w-full max-w-full overflow-x-hidden">
       <div className="fixed inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none z-0" />
 
       <SEOHead

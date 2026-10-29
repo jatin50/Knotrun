@@ -1191,34 +1191,34 @@ export const HeroScene3D: React.FC = () => {
             transform: `translateY(${-scrollProgress * 120}px)`,
             pointerEvents: scrollProgress > 0.12 ? "none" : "auto",
           }}
-          className="absolute inset-0 z-20 flex flex-col justify-between px-5 sm:px-16 pt-24 sm:pt-32 pb-6 sm:pb-14 transition-all duration-75 select-none"
+          className="absolute inset-0 z-20 flex flex-col justify-between px-4 sm:px-16 pt-20 sm:pt-32 pb-3 sm:pb-14 transition-all duration-75 select-none overflow-hidden"
         >
           {/* Top Eyebrow Tag */}
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_12px_#ff9900]" />
-            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-400 uppercase">
+            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_12px_#ff9900]" />
+            <span className="text-[9px] sm:text-xs font-mono font-bold tracking-[0.18em] sm:tracking-[0.25em] text-amber-400 uppercase">
               Knotrun ORCHESTRATION ENGINE // V2.0
             </span>
           </div>
 
           {/* Main Headline & Narrative (Spacious, Uncluttered, Pure Contrast) */}
-          <div className="max-w-4xl space-y-4 sm:space-y-6">
-            <h1 className="text-3xl sm:text-7xl lg:text-8xl font-extrabold text-white tracking-tight leading-[1.08] font-['Space_Grotesk']">
+          <div className="max-w-4xl space-y-2.5 sm:space-y-6">
+            <h1 className="text-2xl xs:text-3xl sm:text-7xl lg:text-8xl font-extrabold text-white tracking-tight leading-[1.08] font-['Space_Grotesk']">
               HIGH-PERFORMANCE <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">
                 WORKFLOW AUTOMATION
               </span>
             </h1>
 
-            <p className="text-xs sm:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed font-['Space_Grotesk']">
+            <p className="text-[11px] xs:text-xs sm:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed font-['Space_Grotesk'] line-clamp-3 sm:line-clamp-none">
               Sub-millisecond in-memory orchestration. Kahn's topological DAG sorting and sandboxed V8 execution operating at 81,000+ ops/sec — completely decoupled from cloud database latency.
             </p>
 
             {/* CTAs */}
-            <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="pt-0.5 sm:pt-2 flex flex-wrap items-center gap-2.5 sm:gap-4">
               <a
                 href="https://knotrun-studio.onrender.com/dashboard"
-                className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-mono text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 shadow-[0_0_30px_rgba(255,153,0,0.4)] transition-all transform hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-8 py-2.5 sm:py-4 rounded-full font-mono text-xs font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 shadow-[0_0_30px_rgba(255,153,0,0.4)] transition-all transform hover:scale-105 active:scale-95"
               >
                 <Play className="w-3.5 sm:w-4 h-3.5 sm:h-4 fill-current text-black" />
                 <span>LAUNCH STUDIO DEMO</span>
@@ -1232,7 +1232,7 @@ export const HeroScene3D: React.FC = () => {
                 <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
               </a>
 
-              <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-mono text-amber-400">
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-mono text-amber-400">
                 <ChevronDown className="w-3.5 sm:w-4 h-3.5 sm:h-4 animate-bounce" />
                 <span>Scroll down to enter 3D pipeline deck</span>
               </div>
@@ -1240,26 +1240,26 @@ export const HeroScene3D: React.FC = () => {
           </div>
 
           {/* Bottom Telemetry Metrics Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 pt-4 sm:pt-8 border-t border-white/10 max-w-5xl">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-6 pt-2.5 sm:pt-8 border-t border-white/10 max-w-5xl">
             <div className="space-y-0.5 sm:space-y-1">
-              <span className="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500">DAG VELOCITY</span>
-              <div className="text-sm sm:text-lg font-bold text-white font-mono">81,151 ops/s</div>
-              <span className="text-[9px] sm:text-[10px] font-mono text-amber-400">+170% Headroom</span>
+              <span className="text-[9px] sm:text-[11px] font-mono uppercase text-slate-500">DAG VELOCITY</span>
+              <div className="text-xs sm:text-lg font-bold text-white font-mono">81,151 ops/s</div>
+              <span className="text-[8px] sm:text-[10px] font-mono text-amber-400">+170% Headroom</span>
             </div>
             <div className="space-y-0.5 sm:space-y-1">
-              <span className="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500">ISOLATE LATENCY</span>
-              <div className="text-sm sm:text-lg font-bold text-white font-mono">0.012 ms</div>
-              <span className="text-[9px] sm:text-[10px] font-mono text-cyan-400">Sort p50</span>
+              <span className="text-[9px] sm:text-[11px] font-mono uppercase text-slate-500">ISOLATE LATENCY</span>
+              <div className="text-xs sm:text-lg font-bold text-white font-mono">0.012 ms</div>
+              <span className="text-[8px] sm:text-[10px] font-mono text-cyan-400">Sort p50</span>
             </div>
             <div className="space-y-0.5 sm:space-y-1">
-              <span className="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500">QUEUE CONCURRENCY</span>
-              <div className="text-sm sm:text-lg font-bold text-white font-mono">2,551 req/s</div>
-              <span className="text-[9px] sm:text-[10px] font-mono text-orange-400">Zero Drops</span>
+              <span className="text-[9px] sm:text-[11px] font-mono uppercase text-slate-500">QUEUE CONCURRENCY</span>
+              <div className="text-xs sm:text-lg font-bold text-white font-mono">2,551 req/s</div>
+              <span className="text-[8px] sm:text-[10px] font-mono text-orange-400">Zero Drops</span>
             </div>
             <div className="space-y-0.5 sm:space-y-1">
-              <span className="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500">SSRF FIREWALL</span>
-              <div className="text-sm sm:text-lg font-bold text-white font-mono">Active</div>
-              <span className="text-[9px] sm:text-[10px] font-mono text-emerald-400">Zero-Trust</span>
+              <span className="text-[9px] sm:text-[11px] font-mono uppercase text-slate-500">SSRF FIREWALL</span>
+              <div className="text-xs sm:text-lg font-bold text-white font-mono">Active</div>
+              <span className="text-[8px] sm:text-[10px] font-mono text-emerald-400">Zero-Trust</span>
             </div>
           </div>
         </div>

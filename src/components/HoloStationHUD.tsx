@@ -147,9 +147,9 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
 }) => {
   const station = STATION_DETAILS[stationIndex] || STATION_DETAILS[1];
 
-  // 3D Tilt & Mouse Parallax Physics
-  const [rotateX, setRotateX] = useState<number>(6);
-  const [rotateY, setRotateY] = useState<number>(-10);
+  // 3D Tilt & Mouse Parallax Physics (Desktop only, flat & stable on mobile)
+  const [rotateX, setRotateX] = useState<number>(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 5));
+  const [rotateY, setRotateY] = useState<number>(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 0 : -8));
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
@@ -165,8 +165,11 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
   } | null>(null);
   const [probeCount, setProbeCount] = useState(1);
 
-  // Mouse move handler for authentic 3D card tilt
+  const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 640;
+
+  // Mouse move handler for authentic 3D card tilt (Desktop only)
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobileScreen) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -187,41 +190,30 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
+    if (!isMobileScreen) setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    // Smooth return to resting aerospace isometric posture
-    setRotateX(5);
-    setRotateY(-8);
+    if (!isMobileScreen) {
+      setRotateX(5);
+      setRotateY(-8);
+    } else {
+      setRotateX(0);
+      setRotateY(0);
+    }
     setGlarePos((prev) => ({ ...prev, opacity: 0 }));
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1) {
-      const touch = e.touches[0];
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotX = -((y - centerY) / centerY) * 10;
-      const rotY = ((x - centerX) / centerX) * 10;
-      setRotateX(rotX);
-      setRotateY(rotY);
-      setGlarePos({
-        x: (x / rect.width) * 100,
-        y: (y / rect.height) * 100,
-        opacity: 0.25,
-      });
-    }
+  const handleTouchMove = () => {
+    // Preserve fluid native mobile gestures
   };
 
   const handleTouchEnd = () => {
-    setRotateX(4);
-    setRotateY(-6);
-    setGlarePos((prev) => ({ ...prev, opacity: 0 }));
+    if (isMobileScreen) {
+      setRotateX(0);
+      setRotateY(0);
+    }
   };
 
   const handleCopyPayload = () => {
@@ -270,11 +262,11 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
 
   return (
     <div
-      className={`relative select-none pointer-events-auto ${
+      className={`relative select-none pointer-events-auto w-full max-w-[calc(100vw-24px)] sm:max-w-[440px] mx-auto ${
         isExiting ? "holo-exit-anim" : "holo-enter-anim"
       }`}
       style={{
-        perspective: 1200,
+        perspective: isMobileScreen ? undefined : 1200,
       }}
     >
       {/* 3D TILTED MECHANICAL CARD SHELL */}
@@ -285,16 +277,18 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
-          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${
-            isHovered ? 1.02 : 1
-          }, ${isHovered ? 1.02 : 1}, 1)`,
-          transformStyle: "preserve-3d",
+          transform: isMobileScreen
+            ? "none"
+            : `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${
+                isHovered ? 1.02 : 1
+              }, ${isHovered ? 1.02 : 1}, 1)`,
+          transformStyle: isMobileScreen ? undefined : "preserve-3d",
           transition: isHovered
             ? "transform 0.08s ease-out"
             : "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
           willChange: "transform",
         }}
-        className="relative w-full max-w-[450px] rounded-2xl p-4 sm:p-6 bg-[#080C14]/94 border border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden group"
+        className="relative w-full rounded-xl sm:rounded-2xl p-3 sm:p-5 bg-[#080C14]/95 border border-white/25 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden group max-h-[72vh] sm:max-h-none overflow-y-auto"
       >
         {/* HOLOGRAPHIC SCANLINE LASER SWEEP (Sweeps across card on node touch) */}
         <div
@@ -423,8 +417,9 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
                 {onClose && (
                   <button
                     onClick={onClose}
-                    className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    className="p-1 sm:p-1.5 rounded-lg text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
                     title="Minimize HUD"
+                    aria-label="Close HUD"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -433,7 +428,7 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
             </div>
           </div>
 
-          <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed font-normal">
+          <p className="text-[10px] sm:text-xs text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-none">
             {station.desc}
           </p>
         </div>

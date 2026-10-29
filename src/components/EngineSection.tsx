@@ -3,6 +3,7 @@ import { Cpu, ShieldCheck, GitFork, Zap, Code2 } from "lucide-react";
 
 export const EngineSection: React.FC = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 640;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -37,20 +38,22 @@ export const EngineSection: React.FC = () => {
         <div
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="lg:col-span-6 flex items-center justify-center p-4 relative"
-          style={{ perspective: "1200px" }}
+          className="lg:col-span-6 flex items-center justify-center p-2 sm:p-4 relative overflow-hidden max-w-full"
+          style={{ perspective: isMobileScreen ? "800px" : "1200px" }}
         >
           {/* Ambient glow behind chip */}
-          <div className="absolute w-[360px] h-[360px] bg-cyan-500/15 rounded-full blur-[90px] pointer-events-none" />
+          <div className="absolute w-[240px] sm:w-[360px] h-[240px] sm:h-[360px] bg-cyan-500/15 rounded-full blur-[70px] sm:blur-[90px] pointer-events-none" />
 
           {/* THE 3D TILTED CHIP MODULE */}
           <div
             style={{
-              transform: `rotateX(${26 - mousePos.y * 18}deg) rotateY(${-18 + mousePos.x * 24}deg) rotateZ(3deg)`,
+              transform: isMobileScreen
+                ? `rotateX(${12 - mousePos.y * 10}deg) rotateY(${-6 + mousePos.x * 12}deg) rotateZ(1deg)`
+                : `rotateX(${26 - mousePos.y * 18}deg) rotateY(${-18 + mousePos.x * 24}deg) rotateZ(3deg)`,
               transformStyle: "preserve-3d",
               transition: "transform 0.15s ease-out",
             }}
-            className="relative w-[280px] xs:w-80 sm:w-96 h-[280px] xs:h-80 sm:h-96 max-w-full rounded-2xl sm:rounded-3xl bg-[#090D16] border-2 border-cyan-500/40 p-4 sm:p-6 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(6,182,212,0.25)] flex flex-col justify-between"
+            className="relative w-[260px] xs:w-72 sm:w-96 h-[260px] xs:h-72 sm:h-96 max-w-[calc(100vw-32px)] rounded-2xl sm:rounded-3xl bg-[#090D16] border-2 border-cyan-500/40 p-3.5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(6,182,212,0.25)] flex flex-col justify-between mx-auto"
           >
             {/* Golden Edge Pins (Silicon Wafer Micro-Pins) */}
             <div className="absolute -top-2 left-6 right-6 flex justify-between pointer-events-none">

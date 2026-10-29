@@ -6,9 +6,11 @@ interface HoloGunHUDProps {
 }
 
 export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
-  // 3D Tilt Physics
-  const [rotateX, setRotateX] = useState<number>(4);
-  const [rotateY, setRotateY] = useState<number>(8);
+  const isMobileScreen = typeof window !== "undefined" && window.innerWidth < 640;
+
+  // 3D Tilt Physics (Desktop only, flat & stable on mobile)
+  const [rotateX, setRotateX] = useState<number>(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 3));
+  const [rotateY, setRotateY] = useState<number>(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 7));
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
@@ -19,6 +21,7 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
   const [testCapacitorCharge, setTestCapacitorCharge] = useState<number | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobileScreen) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -38,34 +41,30 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
+    if (!isMobileScreen) setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setRotateX(3);
-    setRotateY(7);
+    if (!isMobileScreen) {
+      setRotateX(3);
+      setRotateY(7);
+    } else {
+      setRotateX(0);
+      setRotateY(0);
+    }
     setGlarePos((prev) => ({ ...prev, opacity: 0 }));
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1) {
-      const touch = e.touches[0];
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotX = -((y - centerY) / centerY) * 10;
-      const rotY = ((x - centerX) / centerX) * 10;
-      setRotateX(rotX);
-      setRotateY(rotY);
-    }
+  const handleTouchMove = () => {
+    // Preserve natural fluid touch scrolling on mobile
   };
 
   const handleTouchEnd = () => {
-    setRotateX(3);
-    setRotateY(7);
+    if (isMobileScreen) {
+      setRotateX(0);
+      setRotateY(0);
+    }
   };
 
   const handleDischargeBurst = () => {
@@ -90,9 +89,9 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
 
   return (
     <div
-      className="relative select-none pointer-events-auto"
+      className="relative select-none pointer-events-auto w-full max-w-[calc(100vw-24px)] sm:max-w-[440px] mx-auto"
       style={{
-        perspective: 1200,
+        perspective: isMobileScreen ? undefined : 1200,
       }}
     >
       {/* 3D TILTED CARD WRAPPER */}
@@ -103,16 +102,18 @@ export const HoloGunHUD: React.FC<HoloGunHUDProps> = ({ scrollProgress }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
-          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${
-            isHovered ? 1.02 : 1
-          }, ${isHovered ? 1.02 : 1}, 1)`,
-          transformStyle: "preserve-3d",
+          transform: isMobileScreen
+            ? "none"
+            : `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${
+                isHovered ? 1.02 : 1
+              }, ${isHovered ? 1.02 : 1}, 1)`,
+          transformStyle: isMobileScreen ? undefined : "preserve-3d",
           transition: isHovered
             ? "transform 0.08s ease-out"
             : "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
           willChange: "transform",
         }}
-        className="relative w-full max-w-[460px] rounded-2xl p-4 sm:p-6 bg-[#080C14]/92 border border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(255,153,0,0.25)] backdrop-blur-2xl overflow-hidden group"
+        className="relative w-full rounded-xl sm:rounded-2xl p-3 sm:p-5 bg-[#080C14]/95 border border-white/25 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(255,153,0,0.2)] backdrop-blur-2xl overflow-hidden group max-h-[72vh] sm:max-h-none overflow-y-auto"
       >
         {/* DYNAMIC SPECULAR LIGHT SHEEN */}
         <div

@@ -13,7 +13,7 @@ import { SEOHead } from "./components/SEOHead";
 
 function HomePage() {
   return (
-    <div className="relative min-h-screen bg-[#070A0F] text-slate-100 font-['Space_Grotesk'] selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="relative min-h-screen bg-[#070A0F] text-slate-100 font-['Space_Grotesk'] selection:bg-amber-500/30 selection:text-amber-200 w-full max-w-full overflow-x-hidden">
       {/* Dynamic SEO Meta, Social Open Graph & Schema.org JSON-LD */}
       <SEOHead
         title="Knotrun — Industrial-Grade Workflow Orchestration & In-Memory DAG Engine"

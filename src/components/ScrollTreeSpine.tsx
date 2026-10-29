@@ -70,7 +70,7 @@ export const ScrollTreeSpine: React.FC = () => {
   return (
     <div
       ref={spineRef}
-      className="absolute inset-0 pointer-events-none z-0 overflow-hidden w-full h-full"
+      className="hidden md:block absolute inset-0 pointer-events-none z-0 overflow-hidden w-full h-full max-w-full"
     >
       <svg
         className="w-full h-full min-h-[2800px]"
