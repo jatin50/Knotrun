@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <a href="#pipeline-3d" className="flex items-center gap-2 group">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B20] group-hover:scale-125 transition-transform shadow-[0_0_10px_#ff3b20]" />
             <span className="font-extrabold text-sm tracking-wider text-white uppercase font-['Space_Grotesk']">
-              AethelFlow
+              Knotrun
             </span>
             <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
               // v2.0

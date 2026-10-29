@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
             <Cpu className="w-4 h-4" />
           </div>
           <span className="text-sm font-bold text-white tracking-tight font-['Space_Grotesk']">
-            AethelFlow Engine
+            Knotrun Engine
           </span>
           <span className="text-xs text-slate-500 font-mono hidden sm:inline">• Industrial-Grade In-Memory DAG Orchestration</span>
         </div>

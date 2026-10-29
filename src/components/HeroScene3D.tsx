@@ -1197,7 +1197,7 @@ export const HeroScene3D: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_12px_#ff9900]" />
             <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.2em] sm:tracking-[0.25em] text-amber-400 uppercase">
-              AETHELFLOW ORCHESTRATION ENGINE // V2.0
+              Knotrun ORCHESTRATION ENGINE // V2.0
             </span>
           </div>
 
@@ -1331,7 +1331,7 @@ export const HeroScene3D: React.FC = () => {
         {/* BOTTOM RIGHT: HARDWARE IDENTIFIER */}
         <div className="absolute bottom-8 right-8 hidden lg:flex items-center gap-3 px-4 py-2 rounded-xl bg-[#090D16]/80 border border-white/10 backdrop-blur-md text-[11px] font-mono text-slate-400">
           <Cpu className="w-3.5 h-3.5 text-amber-400" />
-          <span>AETHELFLOW KERNEL // V8 IN-MEMORY RUNTIME</span>
+          <span>Knotrun KERNEL // V8 IN-MEMORY RUNTIME</span>
         </div>
       </div>
     </div>
