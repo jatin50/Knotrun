@@ -9,6 +9,30 @@ export const HeroScene3D: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeStation, setActiveStation] = useState<number | null>(null);
+  const [visibleStation, setVisibleStation] = useState<number | null>(null);
+  const [isCardExiting, setIsCardExiting] = useState(false);
+  const exitTimerRef = useRef<number | null>(null);
+  const lastDetectedStationRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (activeStation !== null) {
+      if (exitTimerRef.current) {
+        clearTimeout(exitTimerRef.current);
+        exitTimerRef.current = null;
+      }
+      setVisibleStation(activeStation);
+      setIsCardExiting(false);
+    } else {
+      if (visibleStation !== null && !isCardExiting) {
+        setIsCardExiting(true);
+        exitTimerRef.current = window.setTimeout(() => {
+          setVisibleStation(null);
+          setIsCardExiting(false);
+          exitTimerRef.current = null;
+        }, 220);
+      }
+    }
+  }, [activeStation, visibleStation, isCardExiting]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -948,15 +972,14 @@ export const HeroScene3D: React.FC = () => {
         }
         if (obj && obj.userData?.stationIndex) {
           const idx = obj.userData.stationIndex as number;
-          setActiveStation(idx);
           if (scrollContainerRef.current) {
             const stationRatios: Record<number, number> = {
-              1: 0.38,
-              2: 0.55,
-              3: 0.72,
-              4: 0.88,
+              1: 0.360,
+              2: 0.549,
+              3: 0.685,
+              4: 0.818,
             };
-            const ratio = stationRatios[idx] || 0.38;
+            const ratio = stationRatios[idx] || 0.360;
             const totalScroll =
               scrollContainerRef.current.offsetHeight - window.innerHeight;
             const targetY =
@@ -992,19 +1015,6 @@ export const HeroScene3D: React.FC = () => {
       } else {
         targetT = Math.min(Math.max((progress - 0.22) / (0.94 - 0.22), 0), 1);
       }
-
-      // Station triggers synchronized with packet travel
-      if (targetT >= 0.15 && targetT < 0.38) {
-        setActiveStation(1); // Station 1: Ingestion
-      } else if (targetT >= 0.38 && targetT < 0.62) {
-        setActiveStation(2); // Station 2: V8 Reactor
-      } else if (targetT >= 0.62 && targetT < 0.82) {
-        setActiveStation(3); // Station 3: BullMQ Queue
-      } else if (targetT >= 0.82 && targetT <= 0.98) {
-        setActiveStation(4); // Station 4: Dispatch Bay
-      } else {
-        setActiveStation(null);
-      }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -1024,17 +1034,6 @@ export const HeroScene3D: React.FC = () => {
         mesh.scale.setScalar(1 + Math.sin(time * 7 + i * 0.85) * (0.06 + chargeLevel * 0.08));
       });
 
-      // Docking Station Dynamics
-      st1OuterFrame.rotation.z = time * 0.25;
-      st1InnerScanner.rotation.z = -time * 0.55;
-      st2CyanRing1.rotation.z = time * -0.45;
-      st2CyanRing2.rotation.y = time * 0.40;
-      st3HazardRing.rotation.z = time * 0.35;
-      st4Hub.rotation.y = time * 0.35;
-      st4Hub.rotation.x = Math.sin(time * 0.6) * 0.12;
-      st4EmitterRing.rotation.x = time * 0.55;
-      st4EmitterRing.rotation.y = time * 0.25;
-
       // Gentle, weighted slow-motion scroll interpolation (damping factor 0.038)
       currentT += (targetT - currentT) * 0.038;
 
@@ -1044,6 +1043,49 @@ export const HeroScene3D: React.FC = () => {
       // Packet Position & Synchronized Internal Glow
       packetGroup.position.copy(packetPos);
       packetGlowLight.position.copy(packetPos);
+
+      // Physical Docking Station Centers
+      const st1Pos = new THREE.Vector3(-5.0, 0.0, 0);
+      const st2Pos = new THREE.Vector3(12.0, 0.5, 0);
+      const st3Pos = new THREE.Vector3(24.0, 0.0, 0);
+      const st4Pos = new THREE.Vector3(36.0, 0.5, 0);
+
+      // TOUCH_RADIUS: Triggers ONLY when packet is in or physically touching node boundary envelope
+      const TOUCH_RADIUS = 3.2;
+
+      let detectedStation: number | null = null;
+      if (currentT > 0.04 && currentT < 0.94) {
+        if (packetPos.distanceTo(st1Pos) <= TOUCH_RADIUS) {
+          detectedStation = 1;
+        } else if (packetPos.distanceTo(st2Pos) <= TOUCH_RADIUS) {
+          detectedStation = 2;
+        } else if (packetPos.distanceTo(st3Pos) <= TOUCH_RADIUS) {
+          detectedStation = 3;
+        } else if (packetPos.distanceTo(st4Pos) <= TOUCH_RADIUS) {
+          detectedStation = 4;
+        }
+      }
+
+      if (detectedStation !== lastDetectedStationRef.current) {
+        lastDetectedStationRef.current = detectedStation;
+        setActiveStation(detectedStation);
+      }
+
+      // Docking Station Dynamics & Contact Excitation
+      const isSt1Hit = detectedStation === 1;
+      const isSt2Hit = detectedStation === 2;
+      const isSt3Hit = detectedStation === 3;
+      const isSt4Hit = detectedStation === 4;
+
+      st1OuterFrame.rotation.z = time * (isSt1Hit ? 0.85 : 0.25);
+      st1InnerScanner.rotation.z = -time * (isSt1Hit ? 1.8 : 0.55);
+      st2CyanRing1.rotation.z = time * (isSt2Hit ? -1.6 : -0.45);
+      st2CyanRing2.rotation.y = time * (isSt2Hit ? 1.6 : 0.40);
+      st3HazardRing.rotation.z = time * (isSt3Hit ? 1.4 : 0.35);
+      st4Hub.rotation.y = time * (isSt4Hit ? 1.4 : 0.35);
+      st4Hub.rotation.x = Math.sin(time * 0.6) * (isSt4Hit ? 0.25 : 0.12);
+      st4EmitterRing.rotation.x = time * (isSt4Hit ? 1.8 : 0.55);
+      st4EmitterRing.rotation.y = time * 0.25;
 
       // Energy Pulsing & Shockwave Rippling
       packetCorona.scale.setScalar(1 + Math.sin(time * 8) * 0.16);
@@ -1258,22 +1300,22 @@ export const HeroScene3D: React.FC = () => {
         )}
 
         {/* ============================================================ */}
-        {/* DYNAMIC STATION ARCHITECTURE HUD CARD (Slides in at each station) */}
+        {/* DYNAMIC STATION ARCHITECTURE HUD CARD (Holographic Node Contact) */}
         {/* ============================================================ */}
-        {activeStation && (
-          <div className="absolute bottom-4 sm:bottom-10 left-3 right-3 sm:left-14 sm:right-auto z-30 flex justify-center sm:justify-start animate-in slide-in-from-bottom-8 duration-200">
+        {visibleStation && (
+          <div className="absolute bottom-4 sm:bottom-10 left-3 right-3 sm:left-14 sm:right-auto z-30 flex justify-center sm:justify-start pointer-events-auto">
             <HoloStationHUD
-              stationIndex={activeStation}
+              stationIndex={visibleStation}
+              isExiting={isCardExiting}
               onSelectStation={(idx) => {
-                setActiveStation(idx);
                 if (scrollContainerRef.current) {
                   const stationRatios: Record<number, number> = {
-                    1: 0.38,
-                    2: 0.55,
-                    3: 0.72,
-                    4: 0.88,
+                    1: 0.360,
+                    2: 0.549,
+                    3: 0.685,
+                    4: 0.818,
                   };
-                  const ratio = stationRatios[idx] || 0.38;
+                  const ratio = stationRatios[idx] || 0.360;
                   const totalScroll =
                     scrollContainerRef.current.offsetHeight - window.innerHeight;
                   const targetY =
@@ -1281,6 +1323,7 @@ export const HeroScene3D: React.FC = () => {
                   window.scrollTo({ top: targetY, behavior: "smooth" });
                 }
               }}
+              onClose={() => setActiveStation(null)}
             />
           </div>
         )}

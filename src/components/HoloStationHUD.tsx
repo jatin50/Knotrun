@@ -136,12 +136,14 @@ interface HoloStationHUDProps {
   stationIndex: number;
   onSelectStation?: (index: number) => void;
   onClose?: () => void;
+  isExiting?: boolean;
 }
 
 export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
   stationIndex,
   onSelectStation,
   onClose,
+  isExiting = false,
 }) => {
   const station = STATION_DETAILS[stationIndex] || STATION_DETAILS[1];
 
@@ -268,7 +270,9 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
 
   return (
     <div
-      className="relative select-none pointer-events-auto"
+      className={`relative select-none pointer-events-auto ${
+        isExiting ? "holo-exit-anim" : "holo-enter-anim"
+      }`}
       style={{
         perspective: 1200,
       }}
@@ -292,6 +296,39 @@ export const HoloStationHUD: React.FC<HoloStationHUDProps> = ({
         }}
         className="relative w-full max-w-[450px] rounded-2xl p-4 sm:p-6 bg-[#080C14]/94 border border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(0,0,0,0.6)] backdrop-blur-2xl overflow-hidden group"
       >
+        {/* HOLOGRAPHIC SCANLINE LASER SWEEP (Sweeps across card on node touch) */}
+        <div
+          key={`scanline-${stationIndex}`}
+          className="pointer-events-none absolute left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-white to-transparent holo-scanline-sweep z-40"
+          style={{
+            boxShadow: `0 0 16px ${station.color}, 0 0 25px #ffffff`,
+          }}
+        />
+
+        {/* ELECTROMAGNETIC NODE CONTACT SHOCKWAVE BLOOM */}
+        <div
+          key={`shockwave-${stationIndex}`}
+          className="pointer-events-none absolute inset-0 rounded-2xl border-2 holo-shockwave-bloom z-30"
+          style={{
+            borderColor: station.color,
+            boxShadow: `0 0 35px ${station.color}80`,
+          }}
+        />
+
+        {/* NODE CONTACT CONFIRMED BADGE */}
+        <div className="pointer-events-none absolute top-2.5 left-1/2 -translate-x-1/2 z-30">
+          <span
+            className="text-[8px] font-mono font-bold px-2 py-0.5 rounded-full uppercase tracking-widest border shadow-sm flex items-center gap-1.5"
+            style={{
+              backgroundColor: `${station.color}18`,
+              color: station.color,
+              borderColor: `${station.color}50`,
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: station.color }} />
+            NODE CONTACT // IN-BUFFER
+          </span>
+        </div>
         {/* DYNAMIC SPECULAR LIGHT SHEEN FOLLOWER */}
         <div
           className="pointer-events-none absolute inset-0 rounded-2xl transition-opacity duration-300 z-30"
