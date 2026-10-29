@@ -140,8 +140,8 @@ export const PrivacyPage: React.FC = () => {
           </p>
           <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
             <span>Email: </span>
-            <a href="mailto:security@knotrun.io" className="text-amber-400 hover:underline">
-              security@knotrun.io
+            <a href="mailto:jainjatin2006@gmail.com" className="text-amber-400 hover:underline">
+              jainjatin2006@gmail.com
             </a>
             <span className="block mt-1 text-slate-500">PGP Key ID: 0x81151KNOTRUN</span>
           </div>
