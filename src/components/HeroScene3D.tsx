@@ -1007,13 +1007,13 @@ export const HeroScene3D: React.FC = () => {
       setScrollProgress(progress);
 
       // EXTENDED CALIBRATED STAGES (Generous scroll runway so nothing moves too fast):
-      // 0.00 to 0.20: Slide 1 (Spacious Executive Hero)
-      // 0.20 to 0.35: Slide 2 (Launcher Turret Stage with time to aim)
-      // 0.35 to 0.94: Slow-motion conduit journey from gun to Station 4
-      if (progress < 0.22) {
-        targetT = 0.0; // Payload remains locked inside gun muzzle
+      // 0.00 to 0.09: Slide 1 (Clean Editorial Hero - 3D pipeline hidden on 1st page)
+      // 0.09 to 0.25: Slide 2 (3D Launcher Turret Stage with time to aim)
+      // 0.25 to 0.94: Slow-motion conduit journey from gun to Station 4
+      if (progress < 0.25) {
+        targetT = 0.0; // Payload remains locked inside gun muzzle during Slide 1 & Slide 2
       } else {
-        targetT = Math.min(Math.max((progress - 0.22) / (0.94 - 0.22), 0), 1);
+        targetT = Math.min(Math.max((progress - 0.25) / (0.94 - 0.25), 0), 1);
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -1102,36 +1102,38 @@ export const HeroScene3D: React.FC = () => {
         bead.visible = currentT > 0.01;
       });
 
-      // SCENE VISIBILITY: All 3D architectural elements remain active and visible
-      cannonMountGroup.visible = true;
-      glassTubeMesh.visible = true;
-      innerCoreMesh.visible = true;
-      stationsGroup.visible = true;
-      collarsGroup.visible = true;
-      packetGroup.visible = true;
+      // SCENE VISIBILITY: HIDE ON INITIAL 1ST PAGE TO PREVENT CLASHING WITH EDITORIAL HEADLINE
+      // As soon as the user starts scrolling (scrollRatio >= 0.035), the 3D pipeline emerges
+      const isInitialSlide = scrollRatio < 0.035;
+      cannonMountGroup.visible = !isInitialSlide;
+      glassTubeMesh.visible = !isInitialSlide;
+      innerCoreMesh.visible = !isInitialSlide;
+      stationsGroup.visible = !isInitialSlide;
+      collarsGroup.visible = !isInitialSlide;
+      packetGroup.visible = !isInitialSlide;
 
       // CINEMATIC STAGE-BY-STAGE CAMERA CHOREOGRAPHY (BUTTERY SMOOTH DAMPING)
       const isMob = window.innerWidth < 768;
-      if (currentT < 0.02) {
+      if (scrollRatio < 0.05) {
         // STAGE 1: EXPANSIVE EDITORIAL PERSPECTIVE (SLIDE 1 - CLEAN, SPACIOUS, UNCLUTTERED)
         const slide1CamPos = isMob
           ? new THREE.Vector3(0, 6.0, 26.0)
           : new THREE.Vector3(0, 5.0, 22.0);
-        camera.position.lerp(slide1CamPos, 0.045);
+        camera.position.lerp(slide1CamPos, 0.05);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
-      } else if (currentT >= 0.02 && currentT < 0.12) {
-        // STAGE 2: RAILGUN LAUNCHER DECK (SLIDE 2 - DEDICATED CANNON STAGE)
+      } else if (scrollRatio >= 0.05 && scrollRatio < 0.25) {
+        // STAGE 2: RAILGUN LAUNCHER DECK (SLIDE 2 - DEDICATED TURRET DECK)
         const cannonCamPos = isMob
           ? new THREE.Vector3(-22.5, 4.0, 12.0)
           : new THREE.Vector3(-21.5, 3.2, 8.5);
-        camera.position.lerp(cannonCamPos, 0.045);
+        camera.position.lerp(cannonCamPos, 0.05);
         camera.lookAt(new THREE.Vector3(-18.0, 1.2, 0));
-      } else if (currentT > 0.92) {
+      } else if (scrollRatio > 0.92) {
         // STAGE 4: TRANSITION DOWN INTO SECTION 2
         const exitCamPos = isMob
           ? new THREE.Vector3(38.0, 5.0, 14.0)
           : new THREE.Vector3(38.0, 4.0, 10.0);
-        camera.position.lerp(exitCamPos, 0.045);
+        camera.position.lerp(exitCamPos, 0.05);
         camera.lookAt(packetPos);
       } else {
         // STAGE 3: CONDUIT ESCORT (CINEMATIC 3RD-PERSON FOLLOW CAM CENTERING THE PACKET)
@@ -1139,7 +1141,7 @@ export const HeroScene3D: React.FC = () => {
           ? new THREE.Vector3(-5.2, 4.0, 11.5)
           : new THREE.Vector3(-4.8, 3.2, 8.2);
         const targetCamPos = packetPos.clone().add(cameraOffset);
-        camera.position.lerp(targetCamPos, 0.045);
+        camera.position.lerp(targetCamPos, 0.05);
         camera.lookAt(packetPos.clone().add(new THREE.Vector3(2.5, 0, 0)));
       }
 
@@ -1170,8 +1172,8 @@ export const HeroScene3D: React.FC = () => {
     };
   }, []);
 
-  // Slide 2 (Gun Stage) indicator active state (extended comfortable window)
-  const isGunStage = scrollProgress >= 0.10 && scrollProgress < 0.28;
+  // Slide 2 (Gun Stage) indicator active state (activates after Slide 1 is completely gone)
+  const isGunStage = scrollProgress >= 0.09 && scrollProgress < 0.26;
 
   return (
     // EXTENDED RUNWAY HEIGHT (h-[850vh] gives generous, un-rushed slow-motion scroll depth)
@@ -1182,16 +1184,17 @@ export const HeroScene3D: React.FC = () => {
         <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-crosshair" />
 
         {/* ============================================================ */}
-        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-15%) */}
+        {/* SLIDE 1: CLEAN, SPACIOUS, EXECUTIVE EDITORIAL HERO (SCROLL 0-9%) */}
         {/* ============================================================ */}
         <div
           style={{
-            // Gentle fade-out curve (stays comfortable and readable throughout Slide 1)
-            opacity: Math.max(0, 1 - scrollProgress * 5.0),
-            transform: `translateY(${-scrollProgress * 120}px)`,
-            pointerEvents: scrollProgress > 0.12 ? "none" : "auto",
+            // Fades out smoothly on the first scroll and hides completely before Slide 2 activates
+            opacity: Math.max(0, 1 - scrollProgress * 12.0),
+            transform: `translateY(${-scrollProgress * 150}px)`,
+            pointerEvents: scrollProgress > 0.05 ? "none" : "auto",
+            display: scrollProgress >= 0.09 ? "none" : "flex",
           }}
-          className="absolute inset-0 z-20 flex flex-col justify-between px-4 sm:px-16 pt-16 sm:pt-32 pb-4 sm:pb-14 transition-all duration-75 select-none"
+          className="absolute inset-0 z-20 flex-col justify-between px-4 sm:px-16 pt-16 sm:pt-32 pb-4 sm:pb-14 transition-all duration-75 select-none"
         >
           {/* Top Eyebrow Tag */}
           <div className="flex items-center gap-2">
@@ -1276,7 +1279,7 @@ export const HeroScene3D: React.FC = () => {
         {/* ============================================================ */}
         {/* FLIGHT PROGRESS BAR (Active during conduit escort) */}
         {/* ============================================================ */}
-        {scrollProgress > 0.22 && (
+        {scrollProgress >= 0.25 && (
           <div className="absolute top-16 sm:top-24 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-14 pointer-events-none animate-in fade-in duration-200">
             <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-[#070A0F]/80 border border-white/10 backdrop-blur-md">
               <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-amber-400 animate-ping" />
